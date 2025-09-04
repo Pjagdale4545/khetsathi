@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{buyer.inquiry.page_title}">Send Inquiry</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .form-container {
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .form-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-header h2 {
+            color: #28a745;
+        }
+        .btn-custom {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+            width: 100%;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="form-container">
+        <div class="form-header">
+            <h2 class="mb-0" th:text="#{buyer.inquiry.form_header(${crop.cropName})}">Send Inquiry for <span th:text="${crop.cropName}">Crop Name</span></h2>
+            <p class="text-muted" th:text="#{buyer.inquiry.form_tagline}">Fill out the details below to contact the farmer.</p>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title" th:text="#{buyer.inquiry.crop_details.title}">Crop Details</h5>
+                <p class="card-text mb-1"><strong><span th:text="#{buyer.inquiry.crop_details.farmer_name}">Farmer Name:</span></strong> <span th:text="${crop.farmer.fullName}"></span></p>
+                <p class="card-text mb-1"><strong><span th:text="#{buyer.inquiry.crop_details.description}">Description:</span></strong> <span th:text="${crop.description}"></span></p>
+                <p class="card-text mb-1"><strong><span th:text="#{buyer.inquiry.crop_details.rate}">Rate:</span></strong> <span th:text="${crop.pricePerUnit}"></span></p>
+                <p class="card-text mb-1"><strong><span th:text="#{buyer.inquiry.crop_details.available_quantity}">Available Quantity:</span></strong> <span th:text="${crop.quantity}"></span></p>
+            </div>
+        </div>
+
+        <form id="inquiryForm" th:action="@{/buyer/send-inquiry}" method="post">
+            <input type="hidden" name="cropId" th:value="${crop.id}" />
+
+            <div class="mb-3">
+                <label for="requiredQuantity" class="form-label" th:text="#{buyer.inquiry.form.required_quantity.label}">Required Quantity</label>
+                <input type="number" class="form-control" id="requiredQuantity" name="requiredQuantity" required>
+                <div class="invalid-feedback" th:text="#{buyer.inquiry.form.required_quantity.feedback}">Please provide the required quantity.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="negotiatedRate" class="form-label" th:text="#{buyer.inquiry.form.negotiated_rate.label}">Negotiated Rate (Optional)</label>
+                <input type="number" class="form-control" id="negotiatedRate" name="negotiatedRate" step="0.01">
+            </div>
+            <!-- New field for Total Amount -->
+            <div class="mb-3">
+                <label class="form-label" th:text="#{buyer.inquiry.total_amount}">Total Amount:</label>
+                <p class="fw-bold fs-4" id="totalAmountDisplay">₹ 0.00</p>
+            </div>
+
+            <div class="mb-3">
+                <label for="message" class="form-label" th:text="#{buyer.inquiry.form.message.label}">Comment for Farmer</label>
+                <textarea class="form-control" id="message" name="message" rows="3"></textarea>
+            </div>
+
+            <div th:if="${!hasIdentityDetails}">
+                <hr>
+                <h5 class="text-center text-danger mb-3" th:text="#{buyer.inquiry.form.profile_warning}">Please complete your profile to submit the inquiry</h5>
+                <div class="mb-3">
+                    <label for="aadharNumber" class="form-label" th:text="#{buyer.inquiry.form.aadhar.label}">Aadhar Number</label>
+                    <input type="text" class="form-control" id="aadharNumber" name="aadharNumber" required pattern="^[2-9]{1}[0-9]{11}$" th:title="#{buyer.inquiry.form.aadhar.title}">
+                    <div class="invalid-feedback" th:text="#{buyer.inquiry.form.aadhar.feedback}">A valid Aadhar number is required.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="panNumber" class="form-label" th:text="#{buyer.inquiry.form.pan.label}">PAN Number</label>
+                    <input type="text" class="form-control" id="panNumber" name="panNumber" required pattern="^[A-Z]{5}[0-9]{4}[A-Z]{1}$" th:title="#{buyer.inquiry.form.pan.title}">
+                    <div class="invalid-feedback" th:text="#{buyer.inquiry.form.pan.feedback}">A valid PAN number is required.</div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-custom" th:text="#{buyer.inquiry.form.submit_button}">Send Inquiry</button>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Example of JavaScript for form validation
+    (function() {
+        'use strict';
+        var form = document.getElementById('inquiryForm');
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+
+                // Dynamic Total Amount Calculation
+        const quantityInput = document.getElementById('requiredQuantity');
+        const rateInput = document.getElementById('negotiatedRate');
+        const totalAmountDisplay = document.getElementById('totalAmountDisplay');
+        const originalRate = /*[[${crop.pricePerUnit}]]*/ '0';
+
+        function calculateTotal() {
+            const quantity = parseFloat(quantityInput.value) || 0;
+            const rate = parseFloat(rateInput.value) || parseFloat(originalRate) || 0;
+            const total = quantity * rate;
+            totalAmountDisplay.innerText = '₹ ' + total.toFixed(2);
+        }
+
+        quantityInput.addEventListener('input', calculateTotal);
+        rateInput.addEventListener('input', calculateTotal);
+
+        // Initial calculation on page load
+        calculateTotal();
+
+    })();
+</script>
+</body>
+</html>

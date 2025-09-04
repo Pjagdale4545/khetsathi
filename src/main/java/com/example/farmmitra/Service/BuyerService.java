@@ -1,76 +1,66 @@
 package com.example.farmmitra.Service;
 
-import com.example.farmmitra.dto.UserRegistrationDto;
-import com.example.farmmitra.model.Buyer;
-import com.example.farmmitra.Repository.BuyerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
-import java.util.Collections;
+import com.example.farmmitra.model.Buyer;
+import com.example.farmmitra.model.Crop;
+import com.example.farmmitra.model.Inquiry;
+import com.example.farmmitra.Repository.BuyerRepository;
+import com.example.farmmitra.Repository.CropRepository;
+import com.example.farmmitra.Repository.InquiryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import com.example.farmmitra.model.InquiryStatus;
+
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
-public class BuyerService implements UserDetailsService {
-
-    private final BuyerRepository buyerRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+public class BuyerService {
 
     @Autowired
-    public BuyerService(BuyerRepository buyerRepository, @Lazy BCryptPasswordEncoder passwordEncoder) {
-        this.buyerRepository = buyerRepository;
-        this.passwordEncoder = passwordEncoder;
+    private BuyerRepository buyerRepository;
+
+    @Autowired
+    private CropRepository cropRepository;
+
+    @Autowired
+    private InquiryRepository inquiryRepository;
+
+    public Optional<Buyer> getCurrentBuyer() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return buyerRepository.findByUsername(username);
     }
 
-    /**
-     * Registers a new buyer by checking for existing username/email,
-     * encoding the password, and saving the new buyer to the database.
-     * @param registrationDto The DTO containing the registration data.
-     * @return A message indicating the result of the registration.
-     */
-    public String registerBuyer(UserRegistrationDto registrationDto) {
-        // 1. Check if username or email already exists
-        if (buyerRepository.findByUsername(registrationDto.getUsername()).isPresent()) {
-            return "Username already exists.";
-        }
-        if (buyerRepository.findByEmail(registrationDto.getEmail()).isPresent()) {
-            return "Email already registered.";
-        }
+    public List<Crop> getLatestCrops() {
+        return cropRepository.findTop5ByOrderByCreatedAtDesc();
+    }
 
-        // 2. Hash the password
-        String encodedPassword = passwordEncoder.encode(registrationDto.getPassword());
+    public List<Inquiry> getActiveInquiriesForBuyer(Buyer buyer) {
+        return inquiryRepository.findByBuyerAndStatus(buyer, InquiryStatus.ACTIVE);
+    }
+    
+    public void saveIdentityDetails(Buyer buyer, String aadharNumber, String panNumber) {
+        buyer.setAadharNumber(aadharNumber);
 
-        // 3. Create a new Buyer entity
-        Buyer buyer = new Buyer(
-            registrationDto.getFullName(),
-            registrationDto.getUsername(),
-            registrationDto.getEmail(),
-            encodedPassword,
-            "BUYER" // Assign "BUYER" role
-        );
-
-        // 4. Save the buyer to the database
+        buyer.setPanNumber(panNumber);
         buyerRepository.save(buyer);
-        return "Registration successful!";
     }
 
-    /**
-     * Loads user details for Spring Security authentication.
-     */
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return buyerRepository.findByUsername(username)
-            .map(buyer -> new User(
-                buyer.getUsername(),
-                buyer.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + buyer.getRole().toUpperCase()))
-            ))
-            .orElseThrow(() -> new UsernameNotFoundException("Buyer not found with username: " + username));
-    }
+
+    public Page<Crop> getCrops(int page, int size, String search) {
+        Pageable pageable = PageRequest.of(page, size);
+        if (search != null && !search.isEmpty()) {
+            return cropRepository.findByCropNameContainingIgnoreCase(search, pageable);
+        } else {
+            return cropRepository.findAll(pageable);
+        }
+}
+    
+
+
 }

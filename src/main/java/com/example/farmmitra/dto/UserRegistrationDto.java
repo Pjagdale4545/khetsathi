@@ -1,34 +1,54 @@
 package com.example.farmmitra.dto;
 
 public class UserRegistrationDto {
-    private String username;
-    private String password;
-    private String email;
+
     private String fullName;
-    private String role; // Will be set by the service/controller (e.g., "BUYER")
+    private String mobileNumber; // <-- Add this field
+    private String password;
+    private String email; // Assuming this field exists from previous errors
 
-    // Getters
-    public String getUsername() { return username; }
-    public String getPassword() { return password; }
-    public String getEmail() { return email; }
-    public String getFullName() { return fullName; }
-    public String getRole() { return role; }
 
-    // Setters
-    public void setUsername(String username) { this.username = username; }
-    public void setPassword(String password) { this.password = password; }
-    public void setEmail(String email) { this.email = email; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
-    public void setRole(String role) { this.role = role; }
+    public UserRegistrationDto() {
+    }
 
-    @Override
-    public String toString() {
-        return "UserRegistrationDto{" +
-               "username='" + username + '\'' +
-               ", password='[PROTECTED]'" +
-               ", email='" + email + '\'' +
-               ", fullName='" + fullName + '\'' +
-               ", role='" + role + '\'' +
-               '}';
+    public UserRegistrationDto(String fullName, String mobileNumber, String password, String email) {
+        this.fullName = fullName;
+        this.mobileNumber = mobileNumber;
+        this.password = password;
+        this.email = email;
+    }
+
+    // --- Getters and Setters ---
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getMobileNumber() {
+        return mobileNumber; // <-- Add this getter
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber; // <-- Add this setter
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

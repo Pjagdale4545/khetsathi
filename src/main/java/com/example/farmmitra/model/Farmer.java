@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,25 +15,24 @@ import java.util.List;
 public class Farmer implements Serializable, UserDetails {
 
     public Farmer() {}
-    
-    public Farmer(String fullName, String mobileNumber, String username, String password, String role) {
+
+    // Simplified constructor
+    public Farmer(String fullName, String mobileNumber, String password, Role role) {
         this.fullName = fullName;
         this.mobileNumber = mobileNumber;
-        this.username = username;
         this.password = password;
-        this.role = Role.valueOf(role.toUpperCase()); // Convert String to Role enum
+        this.role = role;
     }
-
 	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    @Column(unique = true, nullable = false)
+    private String username;
 
     @Column(nullable = false)
     private String fullName;
-
-    @Column(unique = true, nullable = false)
-    private String username;
 
     @Column(unique = true, nullable = false)
     private String mobileNumber;
@@ -61,7 +61,8 @@ public class Farmer implements Serializable, UserDetails {
 
     @Override
     public String getUsername() {
-        return this.mobileNumber; // We use the mobile number as the username for login
+        // Correctly returns the mobile number, which is now the official username
+        return this.mobileNumber;
     }
 
     @Override
@@ -84,17 +85,22 @@ public class Farmer implements Serializable, UserDetails {
         return true;
     }
     
-    // --- Getters and Setters (existing methods) ---
+    // --- Getters and Setters ---
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getFullName() { return fullName; }
     public void setFullName(String fullName) { this.fullName = fullName; }
     public String getMobileNumber() { return mobileNumber; }
     public void setMobileNumber(String mobileNumber) { this.mobileNumber = mobileNumber; }
-    public void setUsername(String username) { this.username = username; }
     public void setPassword(String password) { this.password = password; }
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
     public List<Crop> getCrops() { return crops; }
     public void setCrops(List<Crop> crops) { this.crops = crops; }
+
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
 }
