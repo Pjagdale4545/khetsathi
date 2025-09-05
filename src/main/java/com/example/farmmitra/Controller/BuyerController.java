@@ -184,6 +184,8 @@ public class BuyerController {
         model.addAttribute("buyerName", currentBuyer.getFullName());
         List<Inquiry> activeInquiries = buyerService.getActiveInquiriesForBuyer(currentBuyer);
         model.addAttribute("activeInquiries", activeInquiries);
-        return "buyer-inquiries";
+        return "buyer_dashboard_inquiries";
     }
+
+
 }

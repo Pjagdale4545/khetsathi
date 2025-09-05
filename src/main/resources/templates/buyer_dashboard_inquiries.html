@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Inquiries</title>
+    <!-- Use Tailwind CSS for a modern, responsive design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+
+<div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-6 sm:p-8">
+    <h1 class="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-8">Manage My Inquiries</h1>
+
+    <!-- Inquiry Table -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-white rounded-xl overflow-hidden border border-gray-200">
+            <thead class="bg-blue-600 text-white">
+            <tr>
+                <th class="py-3 px-4 text-left font-semibold text-sm">Inquiry ID</th>
+                <th class="py-3 px-4 text-left font-semibold text-sm">Crop</th>
+                <th class="py-3 px-4 text-left font-semibold text-sm">Quantity</th>
+                <th class="py-3 px-4 text-left font-semibold text-sm">Status</th>
+                <th class="py-3 px-4 text-left font-semibold text-sm">Actions</th>
+            </tr>
+            </thead>
+            <tbody class="text-gray-700">
+            <!-- Check if inquiries exist before iterating -->
+            <tr th:if="${#lists.isEmpty(inquiries)}">
+                <td colspan="5" class="py-4 px-4 text-center text-gray-500">You have no active inquiries.</td>
+            </tr>
+            <!-- Loop through the inquiries list passed from the controller -->
+            <tr th:each="inquiry : ${inquiries}" class="border-b border-gray-200 last:border-0 hover:bg-gray-50 transition-colors duration-200">
+                <td th:text="${inquiry.id}" class="py-3 px-4"></td>
+                <td th:text="${inquiry.cropName}" class="py-3 px-4"></td>
+                <td th:text="${inquiry.quantity}" class="py-3 px-4"></td>
+                <td class="py-3 px-4">
+                    <!-- Dynamically apply status colors -->
+                    <span th:text="${inquiry.status}" class="px-2 py-1 rounded-full text-xs font-medium"
+                          th:classappend="${inquiry.status == 'Accepted' ? 'bg-green-100 text-green-800' :
+                                                  (inquiry.status == 'Rejected' ? 'bg-red-100 text-red-800' :
+                                                  'bg-yellow-100 text-yellow-800')}"></span>
+                </td>
+                <td class="py-3 px-4">
+                    <!-- Button to view farmer's message -->
+                    <button
+                            class="view-message-btn bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded-full shadow-md transition-all duration-200"
+                            th:data-message="${inquiry.message}">
+                        View Message
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Message Modal/Message Box -->
+<div id="message-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl p-6 sm:p-8 w-full max-w-sm transform scale-95 transition-transform duration-300">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Farmer's Message</h2>
+        <p id="modal-message" class="text-gray-600 mb-6 break-words"></p>
+        <div class="flex justify-end">
+            <button id="close-modal-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-full transition-colors duration-200">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const viewMessageButtons = document.querySelectorAll('.view-message-btn');
+        const messageModal = document.getElementById('message-modal');
+        const modalMessage = document.getElementById('modal-message');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+
+        viewMessageButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const message = button.getAttribute('data-message');
+                modalMessage.textContent = message || "No message provided.";
+                messageModal.classList.remove('hidden');
+            });
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            messageModal.classList.add('hidden');
+        });
+
+        // Close modal when clicking outside of it
+        messageModal.addEventListener('click', (event) => {
+            if (event.target === messageModal) {
+                messageModal.classList.add('hidden');
+            }
+        });
+    });
+</script>
+</body>
+</html>

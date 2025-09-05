@@ -2,11 +2,15 @@ package com.example.farmmitra.Service;
 
 import com.example.farmmitra.Controller.FarmerController;
 import com.example.farmmitra.Repository.InquiryRepository;
+import com.example.farmmitra.Repository.MessageRepository;
+import com.example.farmmitra.Repository.UserRepository;
 import com.example.farmmitra.model.Buyer;
 import com.example.farmmitra.model.Crop;
 import com.example.farmmitra.model.Farmer;
 import com.example.farmmitra.model.Inquiry;
 import com.example.farmmitra.model.InquiryStatus;
+import com.example.farmmitra.model.Message;
+import com.example.farmmitra.model.User;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,15 +21,22 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import com.example.farmmitra.model.Message; // ⭐ New Import
-import com.example.farmmitra.model.User; // ⭐ New Import
+import java.util.Optional;
+
 
 @Service
 public class InquiryService {
 
-	 private static final Logger log = LoggerFactory.getLogger(FarmerController.class);
+    private static final Logger log = LoggerFactory.getLogger(FarmerController.class);
     @Autowired
     private InquiryRepository inquiryRepository;
+
+    @Autowired
+    private MessageRepository messageRepository; // New Autowired Repository
+
+    @Autowired
+    private UserRepository userRepository;
+
 
     public void saveInquiry(Inquiry inquiry, Buyer buyer, Crop crop) {
         inquiry.setBuyer(buyer);
@@ -49,10 +60,10 @@ public class InquiryService {
         List<Inquiry> inquiries = inquiryRepository.findInquiriesByFarmer(currentFarmer);
 
         if (inquiries == null || inquiries.isEmpty()) {
-        	log.info("Khet if list is empty giving setting the list");
+            log.info("Khet if list is empty giving setting the list");
             System.out.println("No inquiries found for farmer ID: " + currentFarmer.getId());
-          //  return Collections.emptyList();
-            
+            //  return Collections.emptyList();
+
             System.out.println("No inquiries found in DB. Adding test data manually...");
 
             // ⭐ Add dummy inquiries manually
@@ -69,7 +80,7 @@ public class InquiryService {
             Inquiry test2 = new Inquiry();
             test2.setId(1000L);
             test2.setStatus(InquiryStatus.ACTIVE);
-          //  test2.setFarmer(currentFarmer);
+            //  test2.setFarmer(currentFarmer);
 
             inquiries.add(test1);
             inquiries.add(test2);
@@ -81,8 +92,52 @@ public class InquiryService {
                 String buyerName = (inq.getBuyer() != null ? inq.getBuyer().getFullName() : "N/A");
                 System.out.println("  - Inquiry ID: " + inq.getId() + ", Crop: " + cropName + ", Buyer: " + buyerName + ", Status: " + inq.getStatus());
             });
-            return inquiries;
         }
-		return inquiries;
-    }    
+        return inquiries;
+    }
+
+    /**
+     * Finds an inquiry by its ID.
+     * @param inquiryId The ID of the inquiry to find.
+     * @return An Optional containing the inquiry, or empty if not found.
+     */
+    public Optional<Inquiry> findInquiryById(Long inquiryId) {
+        return inquiryRepository.findById(inquiryId);
+    }
+
+    /**
+     * Updates the status of an inquiry.
+     * @param inquiryId The ID of the inquiry to update.
+     * @param newStatus The new status to set (e.g., ACCEPTED, REJECTED).
+     */
+    public void updateInquiryStatus(Long inquiryId, InquiryStatus newStatus) {
+        inquiryRepository.findById(inquiryId).ifPresent(inquiry -> {
+            inquiry.setStatus(newStatus);
+            inquiryRepository.save(inquiry);
+        });
+    }
+
+    /**
+     * Saves a new chat message to the database.
+     * @param inquiry The inquiry the message belongs to.
+     * @param sender The user who sent the message.
+     * @param content The message content.
+     */
+    public void saveMessage(Inquiry inquiry, User sender, String content) {
+        Message message = new Message();
+        message.setInquiry(inquiry);
+        message.setSender(sender);
+        message.setContent(content);
+        message.setTimestamp(LocalDateTime.now());
+        messageRepository.save(message);
+    }
+
+    /**
+     * Retrieves all messages for a given inquiry, sorted by timestamp.
+     * @param inquiry The inquiry for which to retrieve messages.
+     * @return A list of messages.
+     */
+    public List<Message> getMessagesForInquiry(Inquiry inquiry) {
+        return messageRepository.findByInquiryOrderByTimestampAsc(inquiry);
+    }
 }

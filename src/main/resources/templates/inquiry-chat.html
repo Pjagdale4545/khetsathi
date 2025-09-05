@@ -88,7 +88,9 @@
         </div>
     </div>
 
-    <form th:action="@{/inquiries/{inquiryId}/send-message(inquiryId=${inquiryId})}" method="post" class="chat-form">
+    <form th:action="@{/farmer/inquiries/chat/{inquiryId}/send(inquiryId=${inquiryId})}"
+          method="post"
+          class="chat-form">
         <textarea name="content" th:placeholder="#{inquiry.chat.message_placeholder}" rows="2" required></textarea>
         <button type="submit" class="btn btn-primary" th:text="#{inquiry.chat.send_button}">Send</button>
     </form>

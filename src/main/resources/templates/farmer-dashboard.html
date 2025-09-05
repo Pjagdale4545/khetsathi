@@ -75,7 +75,7 @@
                     <a class="nav-link" th:href="@{/index}" th:text="#{nav.home}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{#add-crop-section}" th:text="#{farmer.dashboard.nav.add_crop}">Add Your Crop</a>
+                    <a class="nav-link" th:href="@{#add-crop-section}" th:text="#{farmer.dashboard.add_crop.button}">Add Your Crop</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{farmer.dashboard.nav.services}">
@@ -161,7 +161,7 @@
         <div class="col-lg-4">
             <div class="card card-custom mb-4" id="add-crop-section">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0" th:text="#{farmer.dashboard.add_crop.title}">Add Your Crop</h5>
+                    <h5 class="mb-0" th:text="#{farmer.dashboard.nav.add_crop}">Add Your Crop</h5>
                 </div>
                 <div class="card-body">
                     <form th:action="@{/farmer/dashboard/add-crop}" th:object="${cropDto}" method="post">

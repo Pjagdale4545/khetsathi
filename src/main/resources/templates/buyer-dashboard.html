@@ -84,9 +84,11 @@
                 </li>
             </ul>
         </div>
-        <span class="navbar-text me-3" th:text="#{buyer.dashboard.welcome_greeting(#strings.escapeXml(buyerName))}">
-            Welcome, <span th:text="${buyerName}"></span>
-        </span>
+        <span class="navbar-text me-3"
+              th:text="#{buyer.dashboard.welcome_greeting(${buyerName})}">
+    Welcome, Guest
+</span>
+
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn btn-light" th:text="#{nav.logout_button}"><b>Logout</b></button>     </form>    </div>
 </nav>

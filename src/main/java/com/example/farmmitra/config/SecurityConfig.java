@@ -35,7 +35,7 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
+
     @Bean
     public DaoAuthenticationProvider farmerAuthenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -83,39 +83,39 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/farmer/register", "/farmer/send-otp", "/buyer/register", "/buyer/send-otp"))
-            .authorizeHttpRequests(authorize -> authorize
-                // ⭐ Crucial Ordering: Permit specific paths first, especially /index
-                .requestMatchers(
-                    "/", "/index", "/select-role",
-                    "/farmer/register", "/farmer/send-otp", "/farmer/login", 
-                    "/buyer/register", "/buyer/send-otp", "/buyer/login",    
-                    "/login", 
-                    "/css/**", "/js/**", "/images/**", "/error"
-                ).permitAll()
-                // Then, define role-based access for specific dashboards
-                .requestMatchers("/farmer/**").hasRole("FARMER")
-                .requestMatchers("/buyer/**").hasRole("BUYER")
-                // Finally, ensure all other requests (that haven't been permitted or given specific roles) are authenticated
-                .anyRequest().authenticated() 
-            )
-            .formLogin(form -> form
-                .loginPage("/farmer/login") 
-                .loginProcessingUrl("/login") 
-                .successHandler(authenticationSuccessHandler()) 
-                .failureUrl("/farmer/login?error") 
-                .permitAll() 
-            )
-            .logout(logout -> logout
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .permitAll()
-            )
-            .authenticationProvider(farmerAuthenticationProvider())
-            .authenticationProvider(buyerAuthenticationProvider());
-            
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/farmer/register", "/farmer/send-otp", "/buyer/register", "/buyer/send-otp"))
+                .authorizeHttpRequests(authorize -> authorize
+                        // ⭐ Crucial Ordering: Permit specific paths first, especially /index
+                        .requestMatchers(
+                                "/", "/index", "/select-role",
+                                "/farmer/register", "/farmer/send-otp", "/farmer/login",
+                                "/buyer/register", "/buyer/send-otp", "/buyer/login",
+                                "/login",
+                                "/css/**", "/js/**", "/images/**", "/error"
+                        ).permitAll()
+                        // Then, define role-based access for specific dashboards
+                        .requestMatchers("/farmer/**").hasRole("FARMER")
+                        .requestMatchers("/buyer/**").hasRole("BUYER")
+                        // Finally, ensure all other requests (that haven't been permitted or given specific roles) are authenticated
+                        .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage("/farmer/login")
+                        .loginProcessingUrl("/login")
+                        .successHandler(authenticationSuccessHandler())
+                        .failureUrl("/farmer/login?error")
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
+                )
+                .authenticationProvider(farmerAuthenticationProvider())
+                .authenticationProvider(buyerAuthenticationProvider());
+
         return http.build();
     }
 }
