@@ -17,14 +17,12 @@ pipeline {
             }
         }
 
-
         stage('Build') {
             steps {
                 echo 'Building Pharma Mitra project...'
                 sh 'mvn clean compile'
             }
         }
-
        
         stage('Package') {
             steps {
@@ -32,8 +30,25 @@ pipeline {
                 sh 'mvn package -DskipTests'
             }
         }
-    }
 
+        stage('Docker Build & Deploy') {
+            steps {
+                echo '🐳 Building Docker image...'
+                sh 'docker build -t khetsathi-app:latest .'
+
+                echo '🚀 Running containers with docker-compose...'
+                sh 'docker-compose up -d'
+            }
+        }
+
+        stage('Health Check') {
+            steps {
+                echo '🔍 Checking container health status...'
+                sh 'docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
+            }
+        }
+    }
+    
     post {
         success {
             echo 'Build successful!'
