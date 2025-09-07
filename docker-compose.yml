@@ -5,7 +5,7 @@ services:
     image: khetsathi-app:latest
     container_name: khetsathi-app
     ports:
-      - "8585:8080"
+      - "8585:8585"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/khetsathi
       DB_USRNM: root
