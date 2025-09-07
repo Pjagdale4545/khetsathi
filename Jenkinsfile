@@ -34,6 +34,26 @@ pipeline {
         }
     }
 
+// 🔽 Added new stage for Docker build & deploy
+        stage('Docker Build & Deploy') {
+            steps {
+                echo '🐳 Building Docker image...'
+                sh 'docker build -t khetsathi-app:latest .'
+
+                echo '🚀 Running containers with docker-compose...'
+                sh 'docker-compose up -d'
+            }
+        }
+
+        // 🔽 Added new stage for health check
+        stage('Health Check') {
+            steps {
+                echo '🔍 Checking container health status...'
+                sh 'docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
+            }
+        }
+    }
+    
     post {
         success {
             echo 'Build successful!'
