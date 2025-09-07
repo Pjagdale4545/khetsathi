@@ -17,14 +17,12 @@ pipeline {
             }
         }
 
-
         stage('Build') {
             steps {
                 echo 'Building Pharma Mitra project...'
                 sh 'mvn clean compile'
             }
         }
-
        
         stage('Package') {
             steps {
@@ -32,9 +30,7 @@ pipeline {
                 sh 'mvn package -DskipTests'
             }
         }
-    }
 
-// 🔽 Added new stage for Docker build & deploy
         stage('Docker Build & Deploy') {
             steps {
                 echo '🐳 Building Docker image...'
@@ -45,7 +41,6 @@ pipeline {
             }
         }
 
-        // 🔽 Added new stage for health check
         stage('Health Check') {
             steps {
                 echo '🔍 Checking container health status...'
