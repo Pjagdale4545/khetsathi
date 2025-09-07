@@ -157,14 +157,14 @@ public class FarmerController {
     }
 
     // New methods for handling inquiries and chat
-    @GetMapping("/inquiries/accept/{id}")
+    @PostMapping("/inquiries/accept/{id}")
     public String acceptInquiry(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         inquiryService.updateInquiryStatus(id, InquiryStatus.ACCEPTED);
         redirectAttributes.addFlashAttribute("message", "Inquiry accepted successfully!");
         return "redirect:/farmer/dashboard";
     }
 
-    @GetMapping("/inquiries/reject/{id}")
+    @PostMapping("/inquiries/reject/{id}")
     public String rejectInquiry(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         inquiryService.updateInquiryStatus(id, InquiryStatus.REJECTED);
         redirectAttributes.addFlashAttribute("message", "Inquiry rejected successfully!");

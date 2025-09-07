@@ -238,10 +238,22 @@
                                 <td th:text="${inquiry.inquiryDate != null ? #temporals.format(inquiry.inquiryDate, 'dd-MM-yyyy HH:mm') : 'N/A'}"></td>
                                 <td>
                                     <div class="btn-group" role="group">
-                                        <a th:href="@{/farmer/inquiries/accept/{id}(id=${inquiry.id})}" class="btn btn-sm btn-success" th:text="#{farmer.dashboard.inquiries.table.accept_button}">Accept</a>
-                                        <a th:href="@{/farmer/inquiries/reject/{id}(id=${inquiry.id})}" class="btn btn-sm btn-danger" th:text="#{farmer.dashboard.inquiries.table.reject_button}">Reject</a>
-                                        <a th:href="@{/farmer/inquiries/chat/{inquiryId}(inquiryId=${inquiry.id})}" class="btn btn-sm btn-primary" th:text="#{farmer.dashboard.inquiries.table.message_button}">Message</a>
+                                        <!-- Accept Button (using a form for POST) -->
+                                        <form th:action="@{/farmer/inquiries/accept/{id}(id=${inquiry.id})}" method="post">
+                                            <button type="submit" class="btn btn-sm btn-success" th:text="#{farmer.dashboard.inquiries.table.accept_button}">Accept</button>
+                                        </form>
+
+                                        <!-- Reject Button (using a form for POST) -->
+                                        <form th:action="@{/farmer/inquiries/reject/{id}(id=${inquiry.id})}" method="post">
+                                            <button type="submit" class="btn btn-sm btn-danger" th:text="#{farmer.dashboard.inquiries.table.reject_button}">Reject</button>
+                                        </form>
+
+                                        <!-- Message Button (standard link for navigation) -->
+                                        <a th:href="@{/farmer/inquiries/chat/{inquiryId}(inquiryId=${inquiry.id})}"
+                                           class="btn btn-sm btn-primary"
+                                           th:text="#{farmer.dashboard.inquiries.table.message_button}">Message</a>
                                     </div>
+
                                 </td>
                             </tr>
                             </tbody>
