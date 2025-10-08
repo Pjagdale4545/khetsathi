@@ -8,6 +8,7 @@ import com.example.farmmitra.Service.CropService;
 import com.example.farmmitra.Service.FarmerService;
 import com.example.farmmitra.Service.InquiryService;
 import com.example.farmmitra.Service.OtpService;
+import com.example.farmmitra.dto.ForgotPasswordRequest;
 import com.example.farmmitra.dto.UserRegistrationDto;
 import com.example.farmmitra.model.Farmer;
 import com.example.farmmitra.model.Role;
@@ -18,6 +19,7 @@ import com.example.farmmitra.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,7 +41,7 @@ public class FarmerController {
 
     private final FarmerRepository farmerRepository;
     private final PasswordEncoder passwordEncoder;
-    private final OtpService otpService;
+
     private static final Logger log = LoggerFactory.getLogger(FarmerController.class);
 
     @Autowired
@@ -58,10 +60,10 @@ public class FarmerController {
     private UserRepository userRepository;
 
     @Autowired
-    public FarmerController(FarmerRepository farmerRepository, PasswordEncoder passwordEncoder, OtpService otpService) {
+    public FarmerController(FarmerRepository farmerRepository, PasswordEncoder passwordEncoder) {
         this.farmerRepository = farmerRepository;
         this.passwordEncoder = passwordEncoder;
-        this.otpService = otpService;
+
     }
 
     @GetMapping("/login")
@@ -76,37 +78,24 @@ public class FarmerController {
         return "farmer-register";
     }
 
-    @PostMapping("/send-otp")
-    public String sendOtp(@RequestParam("mobileNumber") String mobileNumber, RedirectAttributes redirectAttributes) {
-        if (farmerRepository.findByMobileNumber(mobileNumber).isPresent()) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Mobile number is already registered.");
-            redirectAttributes.addFlashAttribute("registrationForm", new UserRegistrationDto(null, mobileNumber, null, null));
-            return "redirect:/farmer/register";
-        }
-        String otp = otpService.generateOtp();
-        otpService.saveAndSendOtp(mobileNumber, otp);
-        redirectAttributes.addFlashAttribute("message", "OTP sent to " + mobileNumber);
-        redirectAttributes.addFlashAttribute("registrationForm", new UserRegistrationDto(null, mobileNumber, null, null));
-        return "redirect:/farmer/register";
-    }
+
 
     @PostMapping("/register")
     public String registerFarmer(@ModelAttribute("registrationForm") UserRegistrationDto registrationDto,
-                                 @RequestParam("otp") String otp,
+
                                  RedirectAttributes redirectAttributes) {
         String mobileNumber = registrationDto.getMobileNumber();
         String fullName = registrationDto.getFullName();
         String email = registrationDto.getEmail();
 
-        if (!otpService.verifyOtp(mobileNumber, otp)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Invalid OTP. Please try again.");
-            UserRegistrationDto errorDto = new UserRegistrationDto(fullName, mobileNumber, null, email);
-            redirectAttributes.addFlashAttribute("registrationForm", errorDto);
+        if (farmerRepository.findByMobileNumber(mobileNumber).isPresent()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Mobile number is already registered.");
             return "redirect:/farmer/register";
         }
 
-        String defaultPassword = mobileNumber.substring(Math.max(0, mobileNumber.length() - 4));
-        String encodedPassword = passwordEncoder.encode(defaultPassword);
+        String rawPassword = registrationDto.getPassword();
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+
 
         Farmer farmer = new Farmer();
         farmer.setFullName(fullName);
@@ -116,7 +105,7 @@ public class FarmerController {
         farmer.setRole(Role.FARMER);
         farmerRepository.save(farmer);
 
-        log.info("Registration successful for {}. Default password is last 4 digits of mobile number.", mobileNumber);
+        log.info("Registration successful for {}.", mobileNumber);
 
         redirectAttributes.addFlashAttribute("message", "Registration successful! You can now log in.");
         return "redirect:/farmer/login";
@@ -206,4 +195,34 @@ public class FarmerController {
 
         return "redirect:/farmer/inquiries/chat/" + inquiryId;
     }
+
+    @GetMapping("/forgot_password")
+    public String showForgotPasswordForm(Model model) {
+        model.addAttribute("role", "Farmer");
+        model.addAttribute("actionUrl", "/farmer/forgot_password");
+        return "forgot_password"; // common Thymeleaf template
+    }
+
+
+    @PostMapping(value = "/forgot_password", consumes = "application/json", produces = "application/json")
+    @ResponseBody
+    public ResponseEntity<?> resetPassword(@RequestBody ForgotPasswordRequest request) {
+        boolean updated = farmerService.updatePassword(request.getMobileNumber(), request.getNewPassword());
+        System.out.println("Pass trying postmapping");
+        if (updated) {
+            System.out.println("Pass Success");
+            return ResponseEntity.ok().body(
+                    java.util.Map.of("message", "Password updated successfully!")
+
+
+
+            );
+        } else {
+            return ResponseEntity.status(404).body(
+                    java.util.Map.of("message", "Mobile number not found.")
+            );
+        }
+    }
+
+
 }

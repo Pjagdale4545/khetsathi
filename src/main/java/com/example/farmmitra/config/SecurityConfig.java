@@ -83,13 +83,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/farmer/register", "/farmer/send-otp", "/buyer/register", "/buyer/send-otp"))
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/farmer/register", "/farmer/forgot_password", "/buyer/forgot_password",
+                        "/farmer/send-otp", "/buyer/register", "/buyer/send-otp"))
                 .authorizeHttpRequests(authorize -> authorize
                         // ⭐ Crucial Ordering: Permit specific paths first, especially /index
                         .requestMatchers(
                                 "/", "/index", "/select-role",
-                                "/farmer/register", "/farmer/send-otp", "/farmer/login",
-                                "/buyer/register", "/buyer/send-otp", "/buyer/login",
+                                "/farmer/register","/farmer/forgot_password", "/farmer/send-otp", "/farmer/login",
+                                "/buyer/register", "/buyer/forgot_password","/buyer/send-otp", "/buyer/login",
                                 "/login",
                                 "/css/**", "/js/**", "/images/**", "/error"
                         ).permitAll()
@@ -118,4 +119,10 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+
+
+
+
+
 }

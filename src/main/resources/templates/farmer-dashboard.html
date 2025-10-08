@@ -77,19 +77,7 @@
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{#add-crop-section}" th:text="#{farmer.dashboard.add_crop.button}">Add Your Crop</a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{farmer.dashboard.nav.services}">
-                        Services
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" th:href="@{/farmer/loan-application}" th:text="#{farmer.dashboard.services.loan_application}">Loan Application</a></li>
-                        <li><a class="dropdown-item" href="#" th:text="#{farmer.dashboard.services.weather_alerts}">Weather Alerts</a></li>
-                        <li><a class="dropdown-item" href="#" th:text="#{farmer.dashboard.services.repayment}">Repayment</a></li>
-                        <li><a class="dropdown-item" href="#" th:text="#{farmer.dashboard.services.crop_management}">Crop Management Support</a></li>
-                        <li><a class="dropdown-item" href="#" th:text="#{farmer.dashboard.services.market_prices}">Market Prices Update</a></li>
-                        <li><a class="dropdown-item" href="#" th:text="#{farmer.dashboard.services.fund_disbursement}">Fund Disbursement</a></li>
-                    </ul>
-                </li>
+
             </ul>
             <div class="d-flex">
                 <span class="navbar-text me-3" th:text="#{farmer.dashboard.welcome_greeting(${#authentication.principal.fullName})}">Welcome, <strong sec:authentication="principal.fullName"></strong></span>
@@ -181,6 +169,30 @@
                             <label for="description" th:text="#{farmer.dashboard.add_crop.label.description}">Description (Optional):</label>
                             <textarea id="description" th:field="*{description}" class="form-control"></textarea>
                         </div>
+                        <!-- State -->
+                        <div class="mb-3">
+                            <label for="state" class="form-label">State</label>
+                            <input type="text" id="state" th:field="*{state}" class="form-control" required>
+                        </div>
+
+                        <!-- City -->
+                        <div class="mb-3">
+                            <label for="city" class="form-label">City</label>
+                            <input type="text" id="city" th:field="*{city}" class="form-control" required>
+                        </div>
+
+                        <!-- Village Name -->
+                        <div class="mb-3">
+                            <label for="villageName" class="form-label">Village Name</label>
+                            <input type="text" id="villageName" th:field="*{villageName}" class="form-control" required>
+                        </div>
+
+                        <!-- Pincode -->
+                        <div class="mb-3">
+                            <label for="pincode" class="form-label">Pincode</label>
+                            <input type="text" id="pincode" th:field="*{pincode}" class="form-control" required pattern="[0-9]{6}" title="Enter 6-digit Pincode">
+                        </div>
+
                         <button type="submit" class="btn btn-green w-100" th:text="#{farmer.dashboard.add_crop.button}">Add Crop</button>
                     </form>
                 </div>
@@ -248,10 +260,10 @@
                                             <button type="submit" class="btn btn-sm btn-danger" th:text="#{farmer.dashboard.inquiries.table.reject_button}">Reject</button>
                                         </form>
 
-                                        <!-- Message Button (standard link for navigation) -->
+                                        <!-- Message Button (standard link for navigation)
                                         <a th:href="@{/farmer/inquiries/chat/{inquiryId}(inquiryId=${inquiry.id})}"
                                            class="btn btn-sm btn-primary"
-                                           th:text="#{farmer.dashboard.inquiries.table.message_button}">Message</a>
+                                           th:text="#{farmer.dashboard.inquiries.table.message_button}">Message</a>-->
                                     </div>
 
                                 </td>

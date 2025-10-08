@@ -63,9 +63,9 @@
 <body>
 <div class="role-selection-card">
     <img src="/images/background.jpg" alt="FarmMitra Logo">
-    <h2 th:text="#{select.role.heading}">Select Your Role</h2>
-    <a th:href="@{/select-role(role='farmer')}" class="btn btn-green" th:text="#{select.role.farmer_button}">I am a Farmer</a>
-    <a th:href="@{/select-role(role='buyer')}" class="btn btn-blue" th:text="#{select.role.buyer_button}">I am a Buyer</a>
+    <h2 th:text="#{select_role.title}">Select Your Role</h2>
+    <a th:href="@{/select-role(role='farmer')}" class="btn btn-green" th:text="#{nav.farmer_button}">I am a Farmer</a>
+    <a th:href="@{/select-role(role='buyer')}" class="btn btn-blue" th:text="#{nav.buyer_button}">I am a Buyer</a>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

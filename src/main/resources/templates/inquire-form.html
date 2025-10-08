@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Inquiry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container bg-white p-8 rounded-xl shadow-lg w-full max-w-lg mx-auto">
+    <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Send Inquiry</h1>
+
+    <!-- Crop Details Section -->
+    <div class="bg-gray-50 p-6 rounded-lg mb-6">
+        <h2 class="text-lg font-semibold text-gray-700 mb-4">Crop Details</h2>
+        <div class="space-y-2 text-gray-600">
+            <p><strong>Farmer Name:</strong> <span th:text="${farmer.fullName}">Farmer Name</span></p>
+            <p><strong>Mobile Number:</strong> <span th:text="${farmer.mobileNumber}">Farmer Mobile</span></p>
+
+            <p><strong>Description:</strong> <span th:text="${crop.description}">optional</span></p>
+            <p><strong>Rate:</strong> ₹<span id="rate" th:text="${crop.pricePerUnit}">80.00</span></p>
+            <p><strong>Available Quantity:</strong> <span id="available-quantity" th:text="${crop.quantity}">10000.00</span></p>
+        </div>
+    </div>
+
+    <!-- Inquiry Form -->
+    <form id="inquiry-form" class="space-y-6">
+        <div>
+            <label for="required-quantity" class="block text-gray-700 font-medium mb-1">Required Quantity</label>
+            <input type="number" id="required-quantity" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter quantity" required>
+        </div>
+
+        <div>
+            <p class="text-gray-700 font-medium mb-1">Total Amount</p>
+            <p class="text-2xl font-bold text-gray-900">₹<span id="total-amount">0.00</span></p>
+        </div>
+
+        <div>
+            <label for="comment" class="block text-gray-700 font-medium mb-1">Comment for Farmer</label>
+            <textarea id="comment" rows="4" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Add a message for the farmer..."></textarea>
+        </div>
+
+        <button type="submit" id="send-inquiry-btn" class="w-full bg-green-500 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-green-600 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+            Send Inquiry
+        </button>
+    </form>
+
+    <!-- Inquiry Sent Confirmation Modal -->
+    <div id="inquiry-sent-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
+        <div class="relative p-8 w-96 mx-auto bg-white rounded-xl shadow-lg text-center">
+            <svg class="mx-auto mb-4 w-12 h-12 text-green-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Inquiry Sent Successfully!</h3>
+            <div class="mt-2 py-3">
+                <p class="text-sm text-gray-500">The farmer has been notified of your interest.</p>
+                <p class="text-lg font-bold text-gray-900 mt-2">Farmer's Phone: <span th:text="${farmer.mobileNumber}"></span></p>
+
+                <p class="text-sm font-medium text-green-600">Call for more detail</p>
+            </div>
+            <div class="mt-4">
+                <button id="ok-btn" class="inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:text-sm">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('inquiry-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const requiredQuantity = document.getElementById('required-quantity').value;
+        const comment = document.getElementById('comment').value;
+
+        // In a real application, you would get a unique ID for the crop
+        const cropId = 'brown-rice-123';
+
+        // Get existing inquiries or initialize an empty array
+        const inquiries = JSON.parse(localStorage.getItem('sentInquiries')) || [];
+
+        // Create the inquiry object
+        const newInquiry = {
+            id: cropId,
+            cropName: 'Brown Rice',
+            requiredQuantity: requiredQuantity,
+            comment: comment,
+            status: 'Inquiry Sent',
+            farmerPhone: 'mobileNumber'
+        };
+
+        // Add the new inquiry to the array
+        inquiries.push(newInquiry);
+
+        // Save the updated inquiries array to localStorage
+        localStorage.setItem('sentInquiries', JSON.stringify(inquiries));
+
+        // Disable the form button
+        const sendBtn = document.getElementById('send-inquiry-btn');
+        sendBtn.disabled = true;
+        sendBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
+        sendBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+
+        // Show confirmation modal
+        document.getElementById('inquiry-sent-modal').classList.remove('hidden');
+    });
+
+    document.getElementById('ok-btn').addEventListener('click', function() {
+    window.location.href = '/buyer/dashboard';
+    });
+
+    // Calculate total amount
+    const quantityInput = document.getElementById('required-quantity');
+    const totalAmountSpan = document.getElementById('total-amount');
+    const rate = parseFloat(document.getElementById('rate').textContent);
+
+    quantityInput.addEventListener('input', function() {
+        const quantity = parseFloat(this.value);
+        if (!isNaN(quantity) && quantity >= 0) {
+            const total = quantity * rate;
+            totalAmountSpan.textContent = total.toFixed(2);
+        } else {
+            totalAmountSpan.textContent = '0.00';
+        }
+    });
+
+</script>
+
+</body>
+</html>

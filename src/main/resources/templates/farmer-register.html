@@ -10,22 +10,10 @@
         .card-custom { background-color: #ffffff; border-radius: 1rem; padding: 2rem; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .btn-green { background-color: #28a745; border-color: #28a745; color: white; }
         .btn-green:hover { background-color: #218838; border-color: #218838; }
-        .hidden { display: none; }
-
-       .login-logo-container {
-           text-align: center;
-           margin-bottom: 0%;
-       }
-
-       .centered-login-logo {
-           height: 80px;
-           width: auto;
-          }
-       .container h2 {
-           margin-top: 10px;
-           margin-bottom: 25px;
-       }
-
+        .login-logo-container { text-align: center; margin-bottom: 0%; }
+        .centered-login-logo { height: 80px; width: auto; }
+        .container h2 { margin-top: 10px; margin-bottom: 25px; }
+        .password-mismatch-feedback { color: #dc3545; display: none; }
     </style>
 </head>
 <body>
@@ -43,20 +31,7 @@
                     <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
                     <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
 
-                    <form id="sendOtpForm" th:action="@{/farmer/send-otp}" method="post">
-                        <div class="mb-3">
-                            <label for="mobileNumberOtp" class="form-label" th:text="#{farmer.register.label.mobile}">Mobile Number</label>
-                            <input type="text" id="mobileNumberOtp" name="mobileNumber" class="form-control"
-                                   th:value="${registrationForm.mobileNumber}" required>
-                        </div>
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                        <button type="submit" class="btn btn-green w-100" th:text="#{farmer.register.button.send_otp}">Send OTP</button>
-                    </form>
-
-                    <hr class="my-4" id="separator" th:classappend="${registrationForm.mobileNumber != null ? '' : 'hidden'}">
-
-                    <form id="registerForm" th:action="@{/farmer/register}" th:object="${registrationForm}" method="post"
-                          th:classappend="${registrationForm.mobileNumber != null ? '' : 'hidden'}">
+                    <form id="registerForm" th:action="@{/farmer/register}" th:object="${registrationForm}" method="post">
 
                         <div class="mb-3">
                             <label for="fullName" class="form-label" th:text="#{farmer.register.label.full_name}">Full Name</label>
@@ -64,8 +39,8 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="mobileNumberDisplay" class="form-label" th:text="#{farmer.register.label.registered_mobile}">Registered Mobile Number</label>
-                            <input type="text" id="mobileNumberDisplay" th:field="*{mobileNumber}" class="form-control" readonly>
+                            <label for="mobileNumber" class="form-label" th:text="#{farmer.register.label.mobile}">Mobile Number</label>
+                            <input type="text" id="mobileNumber" th:field="*{mobileNumber}" class="form-control" required>
                         </div>
 
                         <div class="mb-3">
@@ -74,19 +49,22 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="password" class="form-label" th:text="#{farmer.register.label.password}">Set Password (Last 5 digits of Mobile Number)</label>
-                            <input type="password" id="password" th:field="*{password}" class="form-control"
-                                   th:value="${registrationForm.mobileNumber != null ? registrationForm.mobileNumber.substring(T(java.lang.Math).max(0, registrationForm.mobileNumber.length() - 5)) : ''}"
-                                   readonly>
+                            <label for="password" class="form-label">Create Password</label>
+                            <input type="password" id="password" th:field="*{password}" class="form-control" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="otp" class="form-label" th:text="#{farmer.register.label.otp}">Enter OTP</label>
-                            <input type="text" id="otp" name="otp" class="form-control" required>
+                            <label for="confirmPassword" class="form-label">Confirm Password</label>
+                            <input type="password" id="confirmPassword" class="form-control" required>
+                            <div id="passwordMismatchFeedback" class="password-mismatch-feedback">
+                                Passwords do not match.
+                            </div>
                         </div>
+
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <button type="submit" class="btn btn-green w-100" th:text="#{farmer.register.button.register}">Register</button>
                     </form>
+
                     <hr class="my-4">
                     <p class="text-center"><span th:text="#{farmer.register.link.already_account}">Already have an account? </span><a th:href="@{/farmer/login}" th:text="#{farmer.register.link.login}">Login here</a></p>
                 </div>
@@ -95,25 +73,32 @@
     </div>
 </div>
 
-<script th:inline="javascript">
-    const registrationForm = /*[[${registrationForm}]]*/ {};
+<script>
+    (function() {
+        'use strict';
+        const registerForm = document.getElementById('registerForm');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const passwordMismatchFeedback = document.getElementById('passwordMismatchFeedback');
 
-    const sendOtpForm = document.getElementById('sendOtpForm');
-    const registerForm = document.getElementById('registerForm');
-    const separator = document.getElementById('separator');
-    const mobileNumberOtpInput = document.getElementById('mobileNumberOtp');
+        registerForm.addEventListener('submit', function(event) {
+            // Check if passwords match
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                event.preventDefault();
+                event.stopPropagation();
+                passwordMismatchFeedback.style.display = 'block';
+            } else {
+                passwordMismatchFeedback.style.display = 'none';
+            }
 
-    if (registrationForm && registrationForm.mobileNumber) {
-        sendOtpForm.classList.add('hidden');
-        separator.classList.remove('hidden');
-        registerForm.classList.remove('hidden');
-        mobileNumberOtpInput.value = registrationForm.mobileNumber;
-        mobileNumberOtpInput.readOnly = true;
-    } else {
-        sendOtpForm.classList.remove('hidden');
-        separator.classList.add('hidden');
-        registerForm.classList.add('hidden');
-    }
+            // Bootstrap's built-in form validation
+            if (!registerForm.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            registerForm.classList.add('was-validated');
+        }, false);
+    })();
 </script>
 </body>
 </html>

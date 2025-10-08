@@ -51,6 +51,10 @@
                             <label for="password" class="form-label" th:text="#{farmer.login.label.password}">Password</label>
                             <input type="password" id="password" name="password" class="form-control" required>
                         </div>
+                        <div class="text-end mb-4">
+                            <a th:href="@{/farmer/forgot_password}" class="text-decoration-none text-primary fw-medium small">Forgot Password?</a>
+                        </div>
+
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <button type="submit" class="btn btn-green w-100" th:text="#{farmer.login.button.login}">Login</button>
                     </form>

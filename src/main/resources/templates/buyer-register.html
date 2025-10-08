@@ -70,15 +70,7 @@
         <span th:text="${errorMessage}"></span>
     </div>
 
-    <form th:action="@{/buyer/send-otp}" method="post" th:object="${registrationForm}">
-        <div class="mb-3">
-            <label for="mobileNumber" class="form-label" th:text="#{buyer.register.mobile_number}">Mobile Number</label>
-            <input type="tel" id="mobileNumber" th:field="*{mobileNumber}" class="form-control" th:placeholder="#{buyer.register.placeholder.mobile_number}" pattern="[0-9]{10}" maxlength="10" required>
-        </div>
-        <button type="submit" class="btn btn-primary w-100" th:text="#{buyer.register.send_otp_button}">Send OTP</button>
-    </form>
 
-    <hr class="my-4">
 
     <form th:action="@{/buyer/register}" method="post" th:object="${registrationForm}">
         <div class="mb-3">
@@ -95,22 +87,46 @@
         </div>
         <div class="mb-3">
             <label for="mobileNumberFinal" class="form-label" th:text="#{buyer.register.mobile_number_final}">Mobile Number</label>
-            <input type="tel" id="mobileNumberFinal" th:field="*{mobileNumber}" class="form-control" readonly>
+            <input type="tel" id="mobileNumberFinal" th:field="*{mobileNumber}" class="form-control" required>
         </div>
         <div class="mb-3">
-            <label for="passwordDisplay" class="form-label" th:text="#{buyer.register.password_label}">Default Password (Last 4 digits of Mobile No.)</label>
-            <input type="text" id="passwordDisplay" class="form-control" th:value="${registrationForm.mobileNumber != null ? (#strings.length(registrationForm.mobileNumber) > 3 ? #strings.substring(registrationForm.mobileNumber, #strings.length(registrationForm.mobileNumber) - 4) : '') : ''}" />
-            <!-- Hidden field to actually send the password -->
+            <label for="password" class="form-label" th:text="#{buyer.register.password_label}">Password</label>
+            <input type="password" id="password" th:field="*{password}" class="form-control" required>
         </div>
+
         <div class="mb-3">
-            <label for="otp" class="form-label" th:text="#{buyer.register.otp}">OTP</label>
-            <input type="text" id="otp" name="otp" class="form-control" th:placeholder="#{buyer.register.placeholder.otp}" required>
+            <label for="confirmPassword" class="form-label" th:text="#{buyer.register.confirm_password_label}">Confirm Password</label>
+            <input type="password" id="confirmPassword" th:field="*{confirmPassword}" class="form-control" required>
+
+            <div id="passwordMismatchFeedback" class="text-danger" style="display:none;">
+                Passwords do not match.
+            </div>
         </div>
+
         <button type="submit" class="btn btn-green w-100" th:text="#{buyer.register.register_button}">Register</button>
     </form>
 
     <p class="text-center mt-3" th:text="#{login.already_account_text}">Already have an account? <a th:href="@{/buyer/login}" th:text="#{login.login_link}">Login here</a></p>
 </div>
+<script>
+    (function () {
+        'use strict';
+        const registerForm = document.querySelector('form[th\\:action="@{/buyer/register}"]');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const passwordMismatchFeedback = document.getElementById('passwordMismatchFeedback');
+
+        registerForm.addEventListener('submit', function (event) {
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                event.preventDefault();
+                event.stopPropagation();
+                passwordMismatchFeedback.style.display = 'block';
+            } else {
+                passwordMismatchFeedback.style.display = 'none';
+            }
+        }, false);
+    })();
+</script>
 
 </body>
 </html>

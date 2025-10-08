@@ -3,140 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- The title is already using th:text, good job! -->
     <title th:text="#{index.title}">Khetsathi - Your Farming Partner</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            background-color: #f0fdf4; /* A very light green for a fresh look */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .navbar {
-            background-color: #ffffff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .navbar-brand img {
-            height: 80px; /* Increased logo size */
-        }
-        .nav-link {
-            font-weight: bold; /* Highlight menu links */
-            color: #343a40 !important;
-            transition: color 0.3s;
-        }
-        .nav-link.active,
-        .nav-link:hover {
-            color: #28a745 !important;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
         }
         .hero-section {
-            background: linear-gradient(rgba(40, 167, 69, 0.7), rgba(33, 136, 56, 0.7)), url('/images/farmer-background.jpg');
+            background-image: linear-gradient(rgba(40, 167, 69, 0.7), rgba(33, 136, 56, 0.7)), url('https://placehold.co/1920x1080/4ade80/ffffff?text=FARMING');
             background-size: cover;
             background-position: center;
-            color: white;
-            padding: 8rem 0;
-            text-align: center;
-        }
-        .hero-section h1 {
-            font-size: 4.5rem;
-            font-weight: 700;
-        }
-        .hero-section p {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .btn-green-hero {
-            background-color: #ffc107;
-            border-color: #ffc107;
-            color: #333;
-            font-weight: bold;
-            padding: 0.75rem 2.5rem;
-            font-size: 1.25rem;
-            border-radius: 50px;
-        }
-        .btn-green-hero:hover {
-            background-color: #e0a800;
-            border-color: #e0a800;
-        }
-        .about-section {
-            padding: 4rem 0;
-            background-color: #ffffff;
-        }
-        .language-selector {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            z-index: 1000;
-        }
-        .language-selector a {
-            padding: 5px 10px;
-            text-decoration: none;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            color: #333;
-            margin-left: 5px;
-        }
-        .language-selector a:hover {
-            background-color: #f0f0f0;
         }
     </style>
 </head>
-<body>
-<div class="language-selector">
-    <a th:href="@{/?lang=en}">English</a>
-    <a th:href="@{/?lang=hi}">हिंदी</a>
-</div>
+<body class="bg-emerald-50 text-gray-800">
 
-<nav class="navbar navbar-expand-lg navbar-light">
-    <div class="container">
-        <a class="navbar-brand" th:href="@{/}">
-            <img th:src="@{/images/background.jpg}" th:alt-text="#{logo.alt_text}">
+<!-- Header with Navigation and Language Selector -->
+<nav class="sticky top-0 z-40 bg-white shadow-sm py-1">
+    <div class="container mx-auto px-0 flex justify-between items-center">
+        <a class="flex-shrink-0" th:href="@{/}">
+            <img class="w-[175px] h-[90px] bg-transparent" th:src="@{/images/background.jpg}" alt="Khetsaathi Logo" />
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/}" th:text="#{nav.home}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" th:text="#{nav.about}">About Us</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" th:text="#{nav.contact}">Contact Us</a>
-                </li>
-            </ul>
-            <div class="d-flex">
-                <a th:href="@{/select-role(role='buyer')}" class="btn btn-primary me-2" th:text="#{nav.buyer_button}">I am a Buyer</a>
-                <a th:href="@{/farmer/login}" class="btn btn-success" th:text="#{nav.farmer_button}">I am a Farmer</a>
+        <div class="hidden md:flex flex-grow justify-end items-center space-x-8">
+            <!-- Language Selector - Desktop -->
+            <div class="flex space-x-2">
+                <a th:href="@{/?lang=en}" class="px-3 py-1 bg-white rounded-lg text-sm font-medium shadow-sm border border-gray-200 hover:bg-gray-100 transition-colors duration-200">English</a>
+                <a th:href="@{/?lang=hi}" class="px-3 py-1 bg-white rounded-lg text-sm font-medium shadow-sm border border-gray-200 hover:bg-gray-100 transition-colors duration-200">हिंदी</a>
             </div>
+            <a class="text-gray-600 hover:text-green-600 transition-colors duration-200 font-semibold" th:href="@{/}" th:text="#{nav.home}">Home</a>
+            <a class="text-gray-600 hover:text-green-600 transition-colors duration-200 font-semibold" href="#about-us-section" th:text="#{nav.about}">About Us</a>
+            <a class="text-gray-600 hover:text-green-600 transition-colors duration-200 font-semibold" href="#contact-us-section" th:text="#{nav.contact}">Contact Us</a>
+            <a th:href="@{/select-role(role='buyer')}" class="px-6 py-2 rounded-full font-bold text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200 shadow-md" th:text="#{nav.buyer_button}">I am a Buyer</a>
+            <a th:href="@{/farmer/login}" class="px-6 py-2 rounded-full font-bold text-white bg-green-600 hover:bg-green-700 transition-colors duration-200 shadow-md" th:text="#{nav.farmer_button}">I am a Farmer</a>
         </div>
+        <!-- Mobile menu button -->
+        <button id="mobile-menu-button" class="md:hidden text-gray-600 hover:text-green-600 focus:outline-none">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+        </button>
     </div>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-4 space-y-4 text-center bg-white shadow-sm mt-2 rounded-b-lg">
+        <!-- Language Selector for mobile -->
+        <div class="flex justify-center space-x-2 mb-4">
+            <a th:href="@{/?lang=en}" class="px-3 py-1 bg-white rounded-lg text-sm font-medium shadow-sm border border-gray-200 hover:bg-gray-100 transition-colors duration-200">English</a>
+            <a th:href="@{/?lang=hi}" class="px-3 py-1 bg-white rounded-lg text-sm font-medium shadow-sm border border-gray-200 hover:bg-gray-100 transition-colors duration-200">हिंदी</a>
+        </div>
+        <div class="flex flex-col space-y-2">
+            <a class="px-2 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-200 font-semibold" th:href="@{/}" th:text="#{nav.home}">Home</a>
+            <a class="px-2 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-200 font-semibold" href="#about-us-section" th:text="#{nav.about}">About Us</a>
+            <a class="px-2 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-200 font-semibold" href="#contact-us-section" th:text="#{nav.contact}">Contact Us</a>
+        </div>
+        <a th:href="@{/select-role(role='buyer')}" class="block px-4 py-2 rounded-full font-bold text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200 shadow-md" th:text="#{nav.buyer_button}">I am a Buyer</a>
+        <a th:href="@{/farmer/login}" class="block px-4 py-2 rounded-full font-bold text-white bg-green-600 hover:bg-green-700 transition-colors duration-200 shadow-md" th:text="#{nav.farmer_button}">I am a Farmer</a>
+    </div>
+
 </nav>
 
-<div class="hero-section">
-    <div class="container">
-        <h1 th:text="#{hero.headline}">Empowering the Farmers of Tomorrow</h1>
-        <p th:text="#{hero.tagline}">Connecting farmers with resources, knowledge, and opportunities to grow.</p>
-        <a th:href="@{/select-role}" class="btn btn-green-hero" th:text="#{hero.join_button}">Join Khetsaathi Today</a>
+<!-- Hero Section -->
+<div class="hero-section py-32 text-white">
+    <div class="container mx-auto px-4 text-center">
+        <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold mb-4" th:text="#{hero.headline}">Empowering the Farmers of Tomorrow</h1>
+        <p class="text-lg md:text-xl mb-8" th:text="#{hero.tagline}">Connecting farmers with resources, knowledge, and opportunities to grow.</p>
+        <a th:href="@{/select-role}" class="inline-block px-10 py-4 text-lg md:text-xl font-bold rounded-full bg-yellow-400 text-gray-900 hover:bg-yellow-500 transition-colors duration-200 shadow-lg" th:text="#{hero.join_button}">Join Khetsaathi Today</a>
     </div>
 </div>
 
-<div class="about-section">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <img th:src="@{/images/about-farmer.jpg}" class="img-fluid rounded shadow-sm" th:alt-text="#{about.image_alt}">
+<!-- About Us Section -->
+<div id="about-us-section" class="py-16 md:py-24 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col lg:flex-row items-center space-y-12 lg:space-y-0 lg:space-x-12">
+            <div class="w-full lg:w-1/2">
+                <img class="w-full h-auto rounded-3xl shadow-xl transform hover:scale-105 transition-transform duration-300" th:src="@{/images/about-farmer.jpg}" th:alt-text="#{about.image_alt}" />
             </div>
-            <div class="col-lg-6 mt-4 mt-lg-0">
-                <h2 th:text="#{about.mission_title}">Our Mission</h2>
-                <p>At **Khetsathi** (meaning "Farmer's Friend"), our mission is to empower farmers by providing them with the right tools and information. From managing your crops and getting weather alerts to securing loans and finding the best market prices, we are here to support you every step of the way.</p>
-                <p>We believe in a future where technology makes farming smarter, more efficient, and more profitable for everyone.</p>
+            <div class="w-full lg:w-1/2">
+                <h2 class="text-4xl font-bold mb-4 text-green-700"
+                    th:text="#{about.mission_title}">
+                    Our Mission
+                </h2>
+
+                <p class="text-lg mb-4"
+                   th:utext="#{about.mission_paragraph1}">
+                    At <strong class="text-green-600">Khetsathi</strong> (meaning "Farmer's Friend"), our main goal is to help you get the best price for your crops. We have a simple website that connects you directly with buyers. This way, buyers can see many farmers and find good produce, and you can talk to different buyers to get the best deal.
+                </p>
+
+                <p class="text-lg mb-4"
+                   th:text="#{about.mission_paragraph2}">
+                    We believe that when farmers do well, everyone in the village and country does well. We are here to support you every step of the way.
+                </p>
             </div>
         </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Our Other Platforms Section -->
+<div class="py-16 md:py-24 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-4xl font-bold text-center mb-12 text-green-700">Our Other Platforms</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+
+            <!-- InternSaathi Card -->
+            <a href="https://www.internsaathi.com" class="platform-card block p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300">
+                <div class="flex flex-col items-center text-center">
+                    <img class="w-24 h-24 mb-4 rounded-full" th:src="@{/images/internsathilogo.png}" alt="InternSaathi Logo" />
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">InternSaathi</h3>
+                    <p class="text-sm text-gray-500">Your trusted partner for internships, connecting students with industry-ready opportunities.</p>
+                </div>
+            </a>
+
+            <!-- NaukriSaathi Card -->
+            <a href="https://www.naukrisaathi.com" class="platform-card block p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300">
+                <div class="flex flex-col items-center text-center">
+                    <img class="w-24 h-24 mb-4 rounded-full" th:src="@{/images/NaukriSaathi.jpg}" alt="NaukriSaathi Logo" />
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">NaukriSaathi</h3>
+                    <p class="text-sm text-gray-500">Empowering job seekers and professionals to land the right roles across India.</p>
+                </div>
+            </a>
+
+            <!-- TaskSaathi Card -->
+            <a href="https://www.tasksaathi.com" class="platform-card block p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300">
+                <div class="flex flex-col items-center text-center">
+                    <img class="w-24 h-24 mb-4 rounded-full" th:src="@{/images/TaskSaathi.jpg}" alt="TaskSaathi Logo" />
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">TaskSaathi</h3>
+                    <p class="text-sm text-gray-500">Making work effortless, organized, and stress-free.</p>
+                </div>
+            </a>
+
+            <!-- Kaushal Saathi Card -->
+            <a href="https://www.kaushalsaathi.com" class="platform-card block p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300">
+                <div class="flex flex-col items-center text-center">
+                    <img class="w-24 h-24 mb-4 rounded-full" th:src="@{/images/KaushalSaathi.jpg}" alt="KaushalSaathi Logo" />
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">Kaushal Saathi</h3>
+                    <p class="text-sm text-gray-500">Bridging the gap between potential and opportunity for every woman.</p>
+                </div>
+            </a>
+
+            <!-- Sunsys Techsol Card -->
+            <a href="https://www.sunsysglobal.com/" class="platform-card block p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300">
+                <div class="flex flex-col items-center text-center">
+                    <img class="w-24 h-24 mb-4 rounded-full" th:src="@{/images/sunsys.jpg}" alt="Sunsys Logo" />
+                    <h3 class="font-semibold text-lg text-gray-900 mb-1">Sunsys Techsol</h3>
+                    <p class="text-sm text-gray-500">Your trusted partner in renewable and affordable solar energy.</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Footer Section -->
+<footer id="contact-us-section" class="bg-yellow-400 text-gray-900 py-10">
+    <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-center md:text-left space-y-8 md:space-y-0">
+        <div class="w-full md:w-auto">
+            <h5 class="text-lg md:text-xl font-bold mb-2">Contact Us:</h5>
+            <p class="mb-0">info@khetsaathi.com</p>
+            <p>admin@khetsaathi.com</p>
+        </div>
+        <div class="w-full md:w-auto text-center">
+            <p>Powered by <strong class="font-bold">SUNSYS</strong></p>
+            <p class="mt-2">Follow us on
+                <a href="#" class="text-gray-900 hover:text-white mx-1 font-semibold transition-colors duration-200">LinkedIn</a> |
+                <a href="#" class="text-gray-900 hover:text-white mx-1 font-semibold transition-colors duration-200">Instagram</a> |
+                <a href="#" class="text-gray-900 hover:text-white mx-1 font-semibold transition-colors duration-200">Twitter</a>
+            </p>
+        </div>
+        <div class="w-full md:w-auto text-center md:text-right">
+            <p class="mb-1">© 2025 KhetSaathi. All Rights Reserved.</p>
+            <p class="mb-0">
+                <a href="#" class="text-gray-900 hover:text-white mx-1 font-semibold transition-colors duration-200">Privacy Policy</a> |
+                <a href="#" class="text-gray-900 hover:text-white mx-1 font-semibold transition-colors duration-200">Terms & Conditions</a>
+            </p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenu.classList.toggle('hidden');
+    });
+</script>
+
 </body>
 </html>

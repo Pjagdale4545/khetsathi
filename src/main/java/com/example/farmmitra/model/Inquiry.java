@@ -102,4 +102,10 @@ public class Inquiry {
     public void setInquiryDate(LocalDateTime inquiryDate) {
         this.inquiryDate = inquiryDate;
     }
+
+    public void setQuantity(int quantity) { this.requiredQuantity=quantity;
+    }
+
+    public int getQuantity() { return requiredQuantity;
+    }
 }

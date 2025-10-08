@@ -2,27 +2,24 @@ package com.example.farmmitra.Controller;
 
 import com.example.farmmitra.Repository.BuyerRepository;
 import com.example.farmmitra.Repository.CropRepository;
-import com.example.farmmitra.Service.BuyerService;
-import com.example.farmmitra.Service.OtpService;
-import com.example.farmmitra.Service.SmsService;
+import com.example.farmmitra.Service.*;
 import com.example.farmmitra.dto.BuyerRegistrationDto;
+import com.example.farmmitra.dto.ForgotPasswordRequest;
 import com.example.farmmitra.model.Buyer;
 import com.example.farmmitra.model.Crop;
+import com.example.farmmitra.model.Farmer;
 import com.example.farmmitra.model.Inquiry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -34,17 +31,17 @@ public class BuyerController {
     private final OtpService otpService;
     private final SmsService smsService;
     private final BuyerService buyerService;
-    private final CropRepository cropRepository;
+    private final CropService cropService;
+
 
     @Autowired
-    public BuyerController(BuyerRepository buyerRepository, PasswordEncoder passwordEncoder, OtpService otpService, SmsService smsService, BuyerService buyerService,CropRepository cropRepository) {
+    public BuyerController(BuyerRepository buyerRepository, PasswordEncoder passwordEncoder, OtpService otpService, SmsService smsService, BuyerService buyerService, CropRepository cropRepository, CropService cropService) {
         this.buyerRepository = buyerRepository;
         this.passwordEncoder = passwordEncoder;
         this.otpService = otpService;
         this.smsService = smsService;
         this.buyerService = buyerService;
-        this.cropRepository = cropRepository; // ✅ inject here
-
+        this.cropService = cropService;
     }
 
     @GetMapping("/buyer/login")
@@ -83,7 +80,7 @@ public class BuyerController {
 
     @PostMapping("/buyer/register")
     public String registerBuyer(@ModelAttribute("registrationForm") BuyerRegistrationDto registrationDto,
-                                @RequestParam("otp") String otp,
+
                                 RedirectAttributes redirectAttributes) {
 
         String mobileNumber = registrationDto.getMobileNumber();
@@ -94,18 +91,24 @@ public class BuyerController {
             return "redirect:/buyer/register";
         }
 
-        if (!otpService.verifyOtp(mobileNumber, otp)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Invalid OTP. Please try again.");
-            redirectAttributes.addFlashAttribute("registrationForm", registrationDto);
-            return "redirect:/buyer/register";
-        }
 
         String fullName = registrationDto.getFullName();
         String email = registrationDto.getEmail();
         String organizationName = registrationDto.getOrganizationName();
 
-        String defaultPassword = mobileNumber.substring(Math.max(0, mobileNumber.length() - 4));
-        String encodedPassword = passwordEncoder.encode(defaultPassword);
+        String password = registrationDto.getPassword();
+        String confirmPassword = registrationDto.getConfirmPassword();
+
+// Check if passwords match
+        if (!password.equals(confirmPassword)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Passwords do not match.");
+            redirectAttributes.addFlashAttribute("registrationForm", registrationDto);
+            return "redirect:/buyer/register";
+        }
+
+// Encode the password
+        String encodedPassword = passwordEncoder.encode(password);
+
 
         Buyer buyer = new Buyer();
         buyer.setRole("BUYER");
@@ -113,66 +116,53 @@ public class BuyerController {
         buyer.setMobileNumber(mobileNumber);
         buyer.setUsername(mobileNumber);
         buyer.setPassword(encodedPassword);
-        
-        buyer.setEmail(StringUtils.hasText(email) ? email : null); 
-        
+
+        buyer.setEmail(StringUtils.hasText(email) ? email : null);
+
         buyer.setOrganizationName(organizationName);
         buyerRepository.save(buyer);
 
-        String smsMessage = "Dear " + fullName + ", welcome to Khetsathi! Your username is " + mobileNumber + " and your default password is " + defaultPassword + ".";
+        String smsMessage = "Dear " + fullName + ", welcome to Khetsathi! Your username is " + mobileNumber + " and your default password is "  + ".";
         smsService.sendSms(mobileNumber, smsMessage);
 
         redirectAttributes.addFlashAttribute("message", "Registration successful! You can now log in.");
         return "redirect:/buyer/login";
     }
-    
-    public List<Crop> findByName(String search) {
-        return cropRepository.findByCropNameContainingIgnoreCase(search);
-    }
-
 
     @GetMapping("/buyer/dashboard")
     public String showBuyerDashboard(@RequestParam(defaultValue = "0") int page,
                                      @RequestParam(defaultValue = "10") int size,
                                      @RequestParam(required = false) Optional<String> search,
                                      Model model) {
-        
-        // Get the authenticated buyer
+
         Optional<Buyer> currentBuyerOptional = buyerService.getCurrentBuyer();
-        
+
         if (currentBuyerOptional.isEmpty()) {
             return "redirect:/buyer/login";
         }
-        
+
         Buyer currentBuyer = currentBuyerOptional.get();
-         try {
-        // Fetch crops with pagination and search
-        Page<Crop> cropsPage = buyerService.getCrops(page, size, search.orElse(""));
+        try {
+            Page<Crop> cropsPage = buyerService.getCrops(page, size, search.orElse(""));
+            List<Inquiry> activeInquiries = buyerService.getActiveInquiriesForBuyer(currentBuyer);
 
-        // Fetch active inquiries
-        List<Inquiry> activeInquiries = buyerService.getActiveInquiriesForBuyer(currentBuyer);
+            model.addAttribute("crops", cropsPage);
+            model.addAttribute("currentPage", cropsPage.getNumber());
+            model.addAttribute("pageSize", cropsPage.getSize());
+            model.addAttribute("totalPages", cropsPage.getTotalPages());
+            model.addAttribute("search", search.orElse(""));
+            model.addAttribute("buyerName", currentBuyer.getFullName());
+            model.addAttribute("activeInquiries", activeInquiries);
 
-        // Add all required attributes to the model
-        model.addAttribute("crops", cropsPage);
-        model.addAttribute("currentPage", cropsPage.getNumber());
-        model.addAttribute("pageSize", cropsPage.getSize());
-        model.addAttribute("totalPages", cropsPage.getTotalPages());
-        model.addAttribute("search", search.orElse(""));
-        model.addAttribute("buyerName", currentBuyer.getFullName());
-        model.addAttribute("activeInquiries", activeInquiries);
-
-        return "buyer-dashboard";
-    }catch (Exception e) {
-        System.err.println("An error occurred during crop search: " + e.getMessage());
-        e.printStackTrace();
-        
-        // Add error message to the model if you have a dedicated error page
-        model.addAttribute("errorMessage", "An error occurred while searching for crops.");
-        return "redirect:/error";
-
-    	}
+            return "buyer-dashboard";
+        }catch (Exception e) {
+            System.err.println("An error occurred during crop search: " + e.getMessage());
+            e.printStackTrace();
+            model.addAttribute("errorMessage", "An error occurred while searching for crops.");
+            return "redirect:/error";
+        }
     }
-         
+
 
     @GetMapping("/buyer/inquiries")
     public String showBuyerInquiries(Model model) {
@@ -187,5 +177,96 @@ public class BuyerController {
         return "buyer_dashboard_inquiries";
     }
 
+    @GetMapping("/buyer/inquire/{cropId}")
+    public String showInquiryForm(@PathVariable("cropId") Long cropId, Model model) {
+        Optional<Crop> cropOptional = cropService.getCropById(cropId);
 
+        if (cropOptional.isPresent()) {
+            model.addAttribute("crop", cropOptional.get());
+            model.addAttribute("inquiryForm", new Inquiry()); // Use the Inquiry model directly
+
+            Optional<Buyer> buyerOptional = buyerService.getCurrentBuyer();
+
+            boolean hasIdentityDetails = false;
+            if (buyerOptional.isPresent()) {
+                Buyer buyer = buyerOptional.get();
+                if (StringUtils.hasText(buyer.getAadharNumber()) && StringUtils.hasText(buyer.getPanNumber())) {
+                    hasIdentityDetails = true;
+                }
+            }
+            model.addAttribute("hasIdentityDetails", hasIdentityDetails);
+            Crop crop = cropOptional.get();
+            model.addAttribute("crop", crop);
+            model.addAttribute("inquiryForm", new Inquiry());
+
+// Farmer details
+            Farmer farmer = crop.getFarmer(); // get the Farmer object directly
+            model.addAttribute("farmer", farmer);
+
+
+
+            if (farmer != null) {
+                System.out.println("---- Farmer Details ----");
+                System.out.println("ID: " + farmer.getId());
+                System.out.println("Full Name: " + farmer.getFullName());
+                System.out.println("Username: " + farmer.getUsername());
+                System.out.println("Mobile Number: " + farmer.getMobileNumber());
+               //System.out.println("Email: " + farmer.getEmail());
+                //System.out.println("PAN: " + farmer.getPanNumber());
+                //System.out.println("Aadhar: " + farmer.getAadharNumber());
+                System.out.println("Role: " + farmer.getRole());
+               // System.out.println("Created At: " + farmer.getCreatedAt());
+                System.out.println("------------------------");
+            } else {
+                System.out.println("Farmer is null for this crop!");
+            }
+            return "inquire-form";
+
+
+        } else {
+            model.addAttribute("errorMessage", "Crop not found.");
+            return "redirect:/buyer/dashboard";
+        }
+    }
+
+    @PostMapping("/buyer/send-inquiry/{cropId}")
+    public String sendInquiry(@PathVariable("cropId") Long cropId,
+                              @ModelAttribute Inquiry inquiry,
+                              @RequestParam(name = "aadharNumber", required = false) String aadharNumber,
+                              @RequestParam(name = "panNumber", required = false) String panNumber,
+                              RedirectAttributes redirectAttributes) {
+        try {
+            buyerService.sendInquiry(cropId, inquiry, aadharNumber, panNumber);
+            redirectAttributes.addFlashAttribute("successMessage", "Inquiry sent successfully!");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to send inquiry: " + e.getMessage());
+        }
+
+        return "redirect:/buyer/dashboard";
+    }
+    @GetMapping("/buyer/forgot_password")
+    public String showForgotPasswordForm(Model model) {
+        model.addAttribute("role", "Buyer");
+        model.addAttribute("actionUrl", "/buyer/forgot_password");
+        return "forgot_password"; // same template reused
+    }
+
+    @PostMapping(value = "/buyer/forgot_password", consumes = "application/json", produces = "application/json")
+    @ResponseBody
+    public ResponseEntity<?> resetPassword(@RequestBody ForgotPasswordRequest request) {
+        boolean updated = buyerService.updatePassword(request.getMobileNumber(), request.getNewPassword());
+        if (updated) {
+            return ResponseEntity.ok().body(
+                    java.util.Map.of("message", "Password updated successfully!")
+            );
+        } else {
+            return ResponseEntity.status(404).body(
+                    java.util.Map.of("message", "Mobile number not found.")
+            );
+        }
+    }
 }
+
+

@@ -69,21 +69,9 @@ public class InquiryService {
             // ⭐ Add dummy inquiries manually
             inquiries = new ArrayList<>();
 
-            Inquiry test1 = new Inquiry();
-            test1.setId(999L); // dummy id
-            test1.setRequiredQuantity(90);
-            test1.setNegotiatedRate(45.00);
-            test1.setCrop(null); // or create a dummy crop
-            test1.setBuyer(null); // or create a dummy buyer
-            test1.setMessage("Testdate1");
 
-            Inquiry test2 = new Inquiry();
-            test2.setId(1000L);
-            test2.setStatus(InquiryStatus.ACTIVE);
-            //  test2.setFarmer(currentFarmer);
 
-            inquiries.add(test1);
-            inquiries.add(test2);
+
         } else {
             System.out.println("Found " + inquiries.size() + " inquiries for farmer ID: " + currentFarmer.getId());
             // Added detailed logging for debugging purposes

@@ -44,7 +44,12 @@ public class CropService {
         crop.setQuantity(cropDto.getQuantity());
         crop.setPricePerUnit(cropDto.getPricePerUnit());
         crop.setFarmer(farmer);
-        crop.setCreatedAt(LocalDateTime.now());
+        crop.setState(cropDto.getState());
+        crop.setCity(cropDto.getCity());
+        crop.setVillageName(cropDto.getVillageName());
+        crop.setPincode(cropDto.getPincode());crop.setCreatedAt(LocalDateTime.now());
+
+
         return cropRepository.save(crop);
     }
 

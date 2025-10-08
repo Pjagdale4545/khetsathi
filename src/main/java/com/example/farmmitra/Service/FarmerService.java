@@ -72,4 +72,25 @@ public class FarmerService implements UserDetailsService {
         log.info("Logged in farmer username is {}", username);
         return farmerRepository.findByMobileNumber(username);
     }
+
+    // In FarmerService.java
+    public Optional<Farmer> getFarmerById(Long farmerId) {
+        return farmerRepository.findById(farmerId);
+    }
+
+    public boolean updatePassword(String mobileNumber, String newPassword) {
+        Optional<Farmer> farmerOpt = farmerRepository.findByMobileNumber(mobileNumber);
+
+        if (farmerOpt.isPresent()) {
+            Farmer farmer = farmerOpt.get();
+            farmer.setPassword(passwordEncoder.encode(newPassword));
+            farmerRepository.save(farmer);
+            return true;
+        }
+        return false;
+    }
+
+
+
+
 }

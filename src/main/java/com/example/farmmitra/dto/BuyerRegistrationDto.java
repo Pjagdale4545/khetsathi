@@ -6,7 +6,8 @@ public class BuyerRegistrationDto {
     private String mobileNumber;
     private String email;
     private String organizationName;
-   // private String password;
+    private String password;
+    private String confirmPassword;
 
     // Constructors
     public BuyerRegistrationDto() {
@@ -53,11 +54,20 @@ public class BuyerRegistrationDto {
         this.organizationName = organizationName;
     }
 
-//    public String getPassword() {
-//        return password;
-//    }
-//
-//    public void setPassword(String password) {
-//        this.password = password;
-//    }
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
 }

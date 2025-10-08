@@ -87,6 +87,11 @@
             <label for="password" class="form-label" th:text="#{login.label.password}">Password</label>
             <input type="password" id="password" name="password" class="form-control" required>
         </div>
+        <div class="text-end mb-4">
+            <a th:href="@{/buyer/forgot_password}"
+               class="text-decoration-none text-primary fw-medium small">Forgot Password?</a>
+        </div>
+
         <!-- Button is now dynamic -->
         <button type="submit" class="btn btn-green w-100" th:text="#{login.buyer.button}">Login</button>
     </form>

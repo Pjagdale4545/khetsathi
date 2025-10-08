@@ -31,7 +31,22 @@ public class Crop implements Serializable {
 
     @Column(name = "price_per_unit")
     private BigDecimal pricePerUnit;
-    
+
+
+    // ✅ NEW FIELDS
+    @Column(nullable = false)
+    private String state;
+
+    @Column(nullable = false)
+    private String city;
+
+    @Column(name = "village_name", nullable = false)
+    private String villageName;
+
+    @Column(nullable = false, length = 6)
+    private String pincode;
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "farmer_id", nullable = false)
     private Farmer farmer;
@@ -67,7 +82,24 @@ public class Crop implements Serializable {
     
     public BigDecimal getPricePerUnit() { return pricePerUnit; }
     public void setPricePerUnit(BigDecimal pricePerUnit) { this.pricePerUnit = pricePerUnit; }
-    
+
+    public String getState() { return state; }
+    public void setState(String state) { this.state = state; }
+
+    public String getCity() { return city; }
+    public void setCity(String city) { this.city = city; }
+
+    public String getVillageName() { return villageName; }
+    public void setVillageName(String villageName) { this.villageName = villageName; }
+
+    public String getPincode() { return pincode; }
+    public void setPincode(String pincode) { this.pincode = pincode; }
+
+
+    public String getFullLocation() {
+        return state + ", " + city + ", " + villageName + " - " + pincode;
+    }
+
     public Farmer getFarmer() { return farmer; }
     public void setFarmer(Farmer farmer) { this.farmer = farmer; }
     
