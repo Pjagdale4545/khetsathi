@@ -71,33 +71,87 @@
         <a th:href="@{/select-role}" class="inline-block px-10 py-4 text-lg md:text-xl font-bold rounded-full bg-yellow-400 text-gray-900 hover:bg-yellow-500 transition-colors duration-200 shadow-lg" th:text="#{hero.join_button}">Join Khetsaathi Today</a>
     </div>
 </div>
-
 <!-- About Us Section -->
-<div id="about-us-section" class="py-16 md:py-24 bg-white">
+<div id="about-us-section" class="py-16 md:py-20 bg-white">
     <div class="container mx-auto px-4">
-        <div class="flex flex-col lg:flex-row items-center space-y-12 lg:space-y-0 lg:space-x-12">
-            <div class="w-full lg:w-1/2">
-                <img class="w-full h-auto rounded-3xl shadow-xl transform hover:scale-105 transition-transform duration-300" th:src="@{/images/about-farmer.jpg}" th:alt-text="#{about.image_alt}" />
+
+        <!-- MAIN CONTENT GRID: 2 columns on large screens -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+
+            <!-- LEFT COLUMN: Image + Dedicated Team (Unified Block) -->
+            <div class="w-full">
+
+                <!-- Image Block (Increased Height) -->
+                <div class="lg:h-[28rem] overflow-hidden mb-6">
+                    <img class="w-full h-full object-cover rounded-3xl shadow-xl transform hover:scale-105 transition-transform duration-300" th:src="@{/images/about-farmer.jpg}" th:alt-text="#{about.image_alt}" />
+                </div>
+
+                <!-- Dedicated Team Section (Now directly below image) -->
+                <div class="pt-2">
+                    <h4 class="text-xl font-bold mb-2 text-green-700" th:text="#{about.team_title}">
+                        The Dedicated Team
+                    </h4>
+                    <p class="text-base text-gray-700 leading-relaxed">
+                        <!-- Intro text -->
+                        <span th:text="#{about.team_intro}">The initiative is led by a dedicated team:</span>
+
+                        <strong class="mr-1">Saurav Sharma</strong> (IIT, Product Team),
+
+                        <strong class="mr-1">Pooja Jagtap</strong> (KCCSW-Software Developer, <a href="https://www.linkedin.com/in/pooja-jagtap-212a9422a" target="_blank" class="text-blue-500 hover:text-blue-700 transition duration-150">LinkedIn</a>),
+
+                        <strong class="mr-1">Vaishanvi Padwal</strong> (SIBMT-DevOps Team, <a href="https://www.linkedin.com/in/vaishnavi-padwal-0632b8320" target="_blank" class="text-blue-500 hover:text-blue-700 transition duration-150">LinkedIn</a>), and
+
+                        <strong class="mr-1">Abhirash Garg</strong> (ABES, <a href="https://www.linkedin.com/in/abhirashgarg/" target="_blank" class="text-blue-500 hover:text-blue-700 transition duration-150">LinkedIn</a>).
+                        <br/>
+                        <!-- Mentor text -->
+                        <span th:text="#{about.team_mentored_by}">Mentored by</span> <strong class="mr-2">Ashwani Garg (CHRO)</strong> (<a href="https://www.linkedin.com/in/ashwanigarg-chro/" target="_blank" class="text-blue-500 hover:text-blue-700 transition duration-150">LinkedIn</a> <span th:text="#{about.team_mentored_at}">at Sunsys Techsol Pvt. Ltd.</span>).
+                    </p>
+                </div>
             </div>
-            <div class="w-full lg:w-1/2">
-                <h2 class="text-4xl font-bold mb-4 text-green-700"
+
+            <!-- RIGHT COLUMN: Mission & Core Text -->
+            <div class="w-full">
+
+                <h2 class="text-4xl font-bold mb-3 text-green-700"
                     th:text="#{about.mission_title}">
                     Our Mission
                 </h2>
 
-                <p class="text-lg mb-4"
-                   th:utext="#{about.mission_paragraph1}">
-                    At <strong class="text-green-600">Khetsathi</strong> (meaning "Farmer's Friend"), our main goal is to help you get the best price for your crops. We have a simple website that connects you directly with buyers. This way, buyers can see many farmers and find good produce, and you can talk to different buyers to get the best deal.
+                <h3 class="text-2xl font-semibold mb-6 text-gray-800" th:text="#{about.mission_subtitle}">
+                    Empowering Farmers, Feeding India
+                </h3>
+
+                <!-- Core Statement -->
+                <p class="text-lg mb-5 text-gray-700" th:text="#{about.core_statement}">
+                    <strong class="text-green-600">KhetSaathi</strong>, powered by Sunsys Techsol Pvt. Ltd., is an innovative agricultural platform designed to deliver fresh crops, vegetables, and fruits directly from farmers to buyers, minimizing intermediaries and inefficiencies in the supply chain.
                 </p>
 
-                <p class="text-lg mb-4"
-                   th:text="#{about.mission_paragraph2}">
-                    We believe that when farmers do well, everyone in the village and country does well. We are here to support you every step of the way.
+                <!-- Platform Role -->
+                <p class="text-lg mb-4 text-gray-700">
+                    <strong class="text-green-700 font-bold mr-2">🔹
+                        <span th:text="#{about.platform_role_title}">Our Platform Role:</span>
+                    </strong>
+                    <span th:text="#{about.platform_role_text}">KhetSaathi reduces unnecessary parking, re-parking, loading, and reloading of produce between farmer locations, mandis, and buyers. By streamlining the supply chain, we enhance farmer income by cutting down Mandi brokerage and providing buyers with quality produce at slightly lower rates — creating a win-win for farmers, buyers, and society.</span>
+                </p>
+
+                <!-- Farmer Field Option -->
+                <p class="text-lg mb-6 text-gray-700">
+                    <strong class="text-green-700 font-bold mr-2">🔹
+                        <span th:text="#{about.field_to_buyer_title}">Field to Buyer:</span>
+                    </strong>
+                    <span th:text="#{about.field_to_buyer_text}">Farmers also have the option to sell directly from their fields, ensuring freshness, transparency, and better profits.</span>
+                </p>
+
+                <!-- Social Mission -->
+                <p class="text-lg mb-8 text-gray-700 border-l-4 border-green-500 pl-4 italic py-1" th:text="#{about.social_mission}">
+                    Guided by a social mission, KhetSaathi champions Indian farmers, supporting their livelihoods and acknowledging their invaluable role in feeding the nation.
                 </p>
             </div>
         </div>
+
     </div>
 </div>
+
 
 <!-- Our Other Platforms Section -->
 <div class="py-16 md:py-24 bg-gray-50">
