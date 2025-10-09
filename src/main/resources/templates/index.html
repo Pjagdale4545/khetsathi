@@ -86,49 +86,7 @@
                     <img class="w-full h-full object-cover rounded-3xl shadow-xl transform hover:scale-105 transition-transform duration-300" th:src="@{/images/about-farmer.jpg}" th:alt-text="#{about.image_alt}" />
                 </div>
 
-                <!-- Dedicated Team Section (Now directly below image) -->
-                <div class="pt-2">
-                    <h4 class="text-xl font-bold mb-2 text-green-700" th:text="#{about.team_title}">
-                        The Dedicated Team
-                    </h4>
-                    <p class="text-base text-gray-700 leading-relaxed">
-                        <!-- Intro text -->
-                        <span th:text="#{about.team_intro}">The initiative is led by a dedicated team:</span>
 
-                        <strong class="mr-1">Saurav Sharma</strong> (IIT, Product Team),
-
-                        <!-- Pooja Jagtap (Name is now the link) -->
-                        <strong class="mr-1">
-                            <a href="https://www.linkedin.com/in/pooja-jagtap-212a9422a" target="_blank" class="text-blue-500 hover:text-blue-700 transition duration-150">Pooja Jagtap</a>
-                        </strong> (KCCSW-Software Developer),
-
-                        <!-- Vaishanvi Padwal (Name is now the link) -->
-                        <strong class="mr-1">
-                            <a href="https://www.linkedin.com/in/vaishnavi-padwal-0632b8320" target="_blank" class="text-blue-500 hover:text-blue-700 transition duration-150">Vaishanvi Padwal</a>
-                        </strong> (SIBMT-DevOps Team), and
-
-                        <!-- Abhirash Garg (Name is now the link) -->
-                        <strong class="mr-1">
-                            <a href="https://www.linkedin.com/in/abhirashgarg/" target="_blank" class="text-blue-500 hover:text-blue-700 transition duration-150">Abhirash Garg</a>
-                        </strong> (ABES).
-                        <br/>
-
-                        <!-- Mentor text: Ashwani Garg (Name is now the link) -->
-                        <span th:text="#{about.team_mentored_by}">Mentored by</span>
-                        <strong class="mr-2">
-                            <a href="https://www.linkedin.com/in/ashwanigarg-chro/" target="_blank" class="text-blue-500 hover:text-blue-700 transition duration-150">Ashwani Garg (CHRO)</a>
-                        </strong>
-                        (
-                        <!-- Text 'at' or equivalent -->
-                        <span>at</span>
-                        <!-- Static Organization Name and Link (Removed th:text) -->
-                        <a href="https://www.linkedin.com/company/sunsystechsol-pvt-ltd/" target="_blank" class="text-blue-500 hover:text-blue-700 transition duration-150">
-                            Sunsys Techsol Pvt. Ltd.
-                        </a>
-                        ).
-
-                    </p>
-                </div>
             </div>
 
             <!-- RIGHT COLUMN: Mission & Core Text (Rest of the file remains the same) -->
@@ -169,6 +127,49 @@
                     Guided by a social mission, KhetSaathi champions Indian farmers, supporting their livelihoods and acknowledging their invaluable role in feeding the nation.
                 </p>
             </div>
+        </div>
+        <!-- Dedicated Team Section (Now directly below image) -->
+        <div class="pt-2">
+            <h4 class="text-xl font-bold mb-2 text-green-700" th:text="#{about.team_title}">
+                The Dedicated Team
+            </h4>
+            <p class="text-base text-gray-700 leading-relaxed">
+                <!-- Intro text -->
+                <span th:text="#{about.team_intro}">The initiative is led by a dedicated team:</span>
+
+                <strong class="mr-1">Saurav Sharma</strong> (IIT, Product Team),
+
+                <!-- Pooja Jagtap (Name is now the link) -->
+                <strong class="mr-1">
+                    <a href="https://www.linkedin.com/in/pooja-jagtap-212a9422a" target="_blank" class="text-blue-500 hover:text-blue-700 transition duration-150">Pooja Jagtap</a>
+                </strong> (KCCSW-Software Developer),
+
+                <!-- Vaishanvi Padwal (Name is now the link) -->
+                <strong class="mr-1">
+                    <a href="https://www.linkedin.com/in/vaishnavi-padwal-0632b8320" target="_blank" class="text-blue-500 hover:text-blue-700 transition duration-150">Vaishanvi Padwal</a>
+                </strong> (SIBMT-DevOps Team), and
+
+                <!-- Abhirash Garg (Name is now the link) -->
+                <strong class="mr-1">
+                    <a href="https://www.linkedin.com/in/abhirashgarg/" target="_blank" class="text-blue-500 hover:text-blue-700 transition duration-150">Abhirash Garg</a>
+                </strong> (ABES).
+                <br/>
+
+                <!-- Mentor text: Ashwani Garg (Name is now the link) -->
+                <span th:text="#{about.team_mentored_by}">Mentored by</span>
+                <strong class="mr-2">
+                    <a href="https://www.linkedin.com/in/ashwanigarg-chro/" target="_blank" class="text-blue-500 hover:text-blue-700 transition duration-150">Ashwani Garg (CHRO)</a>
+                </strong>
+                (
+                <!-- Text 'at' or equivalent -->
+                <span>at</span>
+                <!-- Static Organization Name and Link (Removed th:text) -->
+                <a href="https://www.linkedin.com/company/sunsystechsol-pvt-ltd/" target="_blank" class="text-blue-500 hover:text-blue-700 transition duration-150">
+                    Sunsys Techsol Pvt. Ltd.
+                </a>
+                ).
+
+            </p>
         </div>
 
     </div>
@@ -240,10 +241,24 @@
         <div class="w-full md:w-auto text-center">
             <p>Powered by <a href="https://www.sunsysglobal.com/" class="text-gray-900 hover:text-white mx-1 font-semibold transition-colors duration-200">Sunsys Techsol</a> |
             </p>
-            <p class="mt-2">Follow us on
-                <a href="#" class="text-gray-900 hover:text-white mx-1 font-semibold transition-colors duration-200">LinkedIn</a> |
-                <a href="#" class="text-gray-900 hover:text-white mx-1 font-semibold transition-colors duration-200">Instagram</a> |
-                <a href="#" class="text-gray-900 hover:text-white mx-1 font-semibold transition-colors duration-200">Twitter</a>
+            <p class="mt-2 flex justify-center items-center space-x-3">
+                <span>Follow us on</span>
+
+                <!-- LinkedIn Icon -->
+                <a href="https://www.linkedin.com/company/khetsaathi/" class="text-gray-900 hover:text-white transition-colors duration-200">
+                    <svg class="w-5 h-5 inline-block" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.268c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm13.5 11.268h-3v-5.604c0-1.338-.026-3.063-1.867-3.063-1.868 0-2.154 1.459-2.154 2.968v5.699h-3v-10h2.881v1.367h.041c.401-.758 1.379-1.558 2.841-1.558 3.037 0 3.6 2.001 3.6 4.601v5.59z"/>
+                    </svg>
+                </a>
+
+                <!-- Instagram Icon -->
+                <a href="https://www.instagram.com/khet_saathi/" class="text-gray-900 hover:text-white transition-colors duration-200">
+                    <svg class="w-5 h-5 inline-block" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.34 3.608 1.316.975.975 1.254 2.242 1.316 3.608.058 1.266.069 1.646.069 4.85s-.012 3.584-.07 4.85c-.062 1.366-.34 2.633-1.316 3.608-.975.975-2.242 1.254-3.608 1.316-1.266.058-1.646.069-4.85.069s-3.584-.012-4.85-.07c-1.366-.062-2.633-.34-3.608-1.316-.975-.975-1.254-2.242-1.316-3.608-.058-1.266-.069-1.646-.069-4.85s.012-3.584.07-4.85c.062-1.366.34-2.633 1.316-3.608.975-.975 2.242-1.254 3.608-1.316 1.266-.058 1.646-.069 4.85-.069zm0-2.163c-3.259 0-3.667.013-4.947.072-1.59.073-3.006.38-4.115 1.489-1.109 1.109-1.416 2.525-1.489 4.115-.059 1.28-.072 1.688-.072 4.947s.013 3.667.072 4.947c.073 1.59.38 3.006 1.489 4.115 1.109 1.109 2.525 1.416 4.115 1.489 1.28.059 1.688.072 4.947.072s3.667-.013 4.947-.072c1.59-.073 3.006-.38 4.115-1.489 1.109-1.109 1.416-2.525 1.489-4.115.059-1.28.072-1.688.072-4.947s-.013-3.667-.072-4.947c-.073-1.59-.38-3.006-1.489-4.115-1.109-1.109-2.525-1.416-4.115-1.489-1.28-.059-1.688-.072-4.947-.072z"/>
+                        <path d="M12 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zm0 10.162a3.999 3.999 0 1 1 0-7.998 3.999 3.999 0 0 1 0 7.998z"/>
+                        <circle cx="18.406" cy="5.594" r="1.44"/>
+                    </svg>
+                </a>
             </p>
         </div>
         <div class="w-full md:w-auto text-center md:text-right">
