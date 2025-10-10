@@ -175,53 +175,63 @@
     </div>
 </div>
 
-
 <!-- Our Other Platforms Section -->
 <div class="py-16 md:py-24 bg-gray-50">
     <div class="container mx-auto px-4">
         <h2 class="text-4xl font-bold text-center mb-12 text-green-700">Our Other Platforms</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
 
-            <!-- InternSaathi Card -->
+            <!-- InternSaathi Card (Reference Design) -->
             <a href="https://www.internsaathi.com" class="platform-card block p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300">
                 <div class="flex flex-col items-center text-center">
-                    <img class="w-24 h-24 mb-4 rounded-full" th:src="@{/images/internsathilogo.png}" alt="InternSaathi Logo" />
+                    <div class="w-24 h-24 mb-4">
+                        <img class="w-full h-full object-contain" th:src="@{/images/internsathilogo.png}" alt="InternSaathi Logo" />
+                    </div>
                     <h3 class="font-semibold text-lg text-gray-900 mb-1">InternSaathi</h3>
                     <p class="text-sm text-gray-500">Your trusted partner for internships, connecting students with industry-ready opportunities.</p>
                 </div>
             </a>
 
-            <!-- NaukriSaathi Card -->
+            <!-- NaukriSaathi Card (Adjusted) -->
             <a href="https://www.naukrisaathi.com" class="platform-card block p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300">
                 <div class="flex flex-col items-center text-center">
-                    <img class="w-24 h-24 mb-4 rounded-full" th:src="@{/images/NaukriSaathi.jpg}" alt="NaukriSaathi Logo" />
+                    <!-- CHANGED: made container size same as InternSaathi -->
+                    <div class="w-24 h-24 mb-4">
+                        <img class="w-full h-full object-contain" th:src="@{/images/NaukriSaathi.jpg}" alt="NaukriSaathi Logo" />
+                    </div>
                     <h3 class="font-semibold text-lg text-gray-900 mb-1">NaukriSaathi</h3>
                     <p class="text-sm text-gray-500">Empowering job seekers and professionals to land the right roles across India.</p>
                 </div>
             </a>
 
-            <!-- TaskSaathi Card -->
+            <!-- TaskSaathi Card (Adjusted) -->
             <a href="https://www.tasksaathi.com" class="platform-card block p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300">
                 <div class="flex flex-col items-center text-center">
-                    <img class="w-24 h-24 mb-4 rounded-full" th:src="@{/images/TaskSaathi.jpg}" alt="TaskSaathi Logo" />
+                    <!-- CHANGED: unified size & removed overflow-hidden -->
+                    <div class="w-24 h-24 mb-4">
+                        <img class="w-full h-full object-contain" th:src="@{/images/TaskSaathi.jpeg}" alt="TaskSaathi Logo" />
+                    </div>
                     <h3 class="font-semibold text-lg text-gray-900 mb-1">TaskSaathi</h3>
                     <p class="text-sm text-gray-500">Making work effortless, organized, and stress-free.</p>
                 </div>
             </a>
 
-            <!-- Kaushal Saathi Card -->
+            <!-- Kaushal Saathi Card (Adjusted) -->
             <a href="https://www.kaushalsaathi.com" class="platform-card block p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300">
                 <div class="flex flex-col items-center text-center">
-                    <img class="w-24 h-24 mb-4 rounded-full" th:src="@{/images/KaushalSaathi.jpg}" alt="KaushalSaathi Logo" />
+                    <!-- CHANGED: unified logo container -->
+                    <div class="w-24 h-24 mb-4">
+                        <img class="w-full h-full object-contain" th:src="@{/images/KaushalSaathi.jpg}" alt="KaushalSaathi Logo" />
+                    </div>
                     <h3 class="font-semibold text-lg text-gray-900 mb-1">Kaushal Saathi</h3>
                     <p class="text-sm text-gray-500">Bridging the gap between potential and opportunity for every woman.</p>
                 </div>
             </a>
 
-            <!-- Sunsys Techsol Card -->
+            <!-- Sunsys Techsol Card (Unchanged - already good) -->
             <a href="https://www.sunsysglobal.com/" class="platform-card block p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300">
                 <div class="flex flex-col items-center text-center">
-                    <img class="w-24 h-24 mb-4 rounded-full" th:src="@{/images/sunsys.jpg}" alt="Sunsys Logo" />
+                    <img class="w-24 h-24 mb-4 rounded-full object-contain" th:src="@{/images/sunsys.jpg}" alt="Sunsys Logo" />
                     <h3 class="font-semibold text-lg text-gray-900 mb-1">Sunsys Techsol</h3>
                     <p class="text-sm text-gray-500">Your trusted partner in renewable and affordable solar energy.</p>
                 </div>
@@ -229,6 +239,7 @@
         </div>
     </div>
 </div>
+
 
 <!-- Footer Section -->
 <footer id="contact-us-section" class="bg-yellow-400 text-gray-900 py-10">
